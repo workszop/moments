@@ -46,9 +46,6 @@ export function CardViewer(container) {
     <div class="card-container card-in" id="card-wrap">
       <div class="card-inner" id="card-inner">
         <div class="card-face card-front">
-          <div class="card-front-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          </div>
           <p class="card-front-hint">your moment</p>
           <p class="card-front-sub">tap to reveal</p>
         </div>
@@ -67,7 +64,7 @@ export function CardViewer(container) {
     </div>
 
     <div class="actions w-full">
-      <button class="btn btn-secondary fav-btn" id="fav-toggle">Save</button>
+      <button class="btn btn-secondary" id="my-codes-btn">My codes</button>
       <button class="btn btn-primary" id="next-card-btn" style="flex:1">
         Next
         <span class="hint" id="card-counter" style="color:rgba(255,255,255,.6)"></span>
@@ -82,7 +79,6 @@ export function CardViewer(container) {
   const cardText = view.querySelector('#card-text');
   const cardAuthor = view.querySelector('#card-author');
   const cardTypeChip = view.querySelector('#card-type-chip');
-  const favBtn = view.querySelector('#fav-toggle');
   const counter = view.querySelector('#card-counter');
   const nextBtn = view.querySelector('#next-card-btn');
   const swipeHint = view.querySelector('#swipe-hint');
@@ -103,10 +99,6 @@ export function CardViewer(container) {
     cardTypeChip.innerHTML = `<span class="chip ${typeClass}">${typeLabel}</span>`;
     cardText.textContent = `"${msg.content}"`;
     cardAuthor.textContent = `\u2014 ${msg.author}`;
-
-    const isFav = store.isFavorite(msg.message_id);
-    favBtn.textContent = isFav ? 'Saved' : 'Save';
-    favBtn.classList.toggle('fav-btn-active', isFav);
 
     counter.textContent = `${currentIndex + 1}/${messages.length}`;
 
@@ -138,15 +130,7 @@ export function CardViewer(container) {
 
   cardInner.addEventListener('click', handleCardTap);
 
-  favBtn.addEventListener('click', () => {
-    const msg = messages[currentIndex];
-    if (!msg) return;
-    store.toggleFavorite(msg.message_id);
-    const isFav = store.isFavorite(msg.message_id);
-    favBtn.textContent = isFav ? 'Saved' : 'Save';
-    favBtn.classList.toggle('fav-btn-active', isFav);
-    window.showToast(isFav ? 'Saved to favorites' : 'Removed from favorites');
-  });
+  view.querySelector('#my-codes-btn').addEventListener('click', () => router.navigate('my-codes'));
 
   nextBtn.addEventListener('click', () => {
     if (messages.length > 1) nextCard();
