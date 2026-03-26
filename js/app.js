@@ -5,6 +5,10 @@ import { WelcomeScreen } from './components/WelcomeScreen.js';
 import { CodeEntry } from './components/CodeEntry.js';
 import { CardViewer } from './components/CardViewer.js';
 import { FavoritesList } from './components/FavoritesList.js';
+import { PrivateVault } from './components/PrivateVault.js';
+import { MyCodesManager } from './components/MyCodesManager.js';
+import { GiftCreator } from './components/GiftCreator.js';
+import { ContributePage } from './components/ContributePage.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   const body = document.body;
@@ -20,7 +24,11 @@ document.addEventListener('DOMContentLoaded', () => {
     .on('welcome', (el) => WelcomeScreen(el))
     .on('codes', (el) => CodeEntry(el))
     .on('card', (el) => CardViewer(el))
-    .on('favorites', (el) => FavoritesList(el));
+    .on('favorites', (el) => FavoritesList(el))
+    .on('vault', (el) => PrivateVault(el))
+    .on('my-codes', (el) => MyCodesManager(el))
+    .on('create', (el) => GiftCreator(el))
+    .on('contribute/:id', (el, params) => ContributePage(el, params));
 
   // Boot
   if (!window.location.hash) {
