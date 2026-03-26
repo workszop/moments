@@ -94,7 +94,7 @@ Conversion notes:
 
 
 
-* **Infrastructure:** Firebase, Supabase, or a custom Node.js/PostgreSQL stack.
+* **Infrastructure:** Firebase stack.
 * **Data Structure:** Relational mapping between Users, Access_Codes, and Messages.
 * **Security:** Read-only access for receivers using the code. Write-access for creators/contributors.
 
