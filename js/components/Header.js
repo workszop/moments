@@ -12,7 +12,7 @@ export function Header() {
 
     header.innerHTML = `
       <a href="#welcome" class="logo-lockup">
-        <span class="logo-icon">&#10024;</span>
+        <span class="logo-icon"></span>
         <span class="logo-name">moments</span>
       </a>
       ${showCard
@@ -21,7 +21,7 @@ export function Header() {
            </button>`
         : hasCodes
           ? `<button class="btn-secondary btn-small nav-favs-btn">
-              &#9829; Favorites
+              Favorites
              </button>`
           : ''
       }

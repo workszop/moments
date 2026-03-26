@@ -50,7 +50,7 @@ export function MessageEditor(container, giftState, { onNext, onBack }) {
       `}
 
       <div style="display:flex;gap:12px">
-        <button class="btn-secondary" id="msg-back-btn">&#8592; Back</button>
+        <button class="btn-secondary" id="msg-back-btn">Back</button>
         <button class="btn-primary" id="msg-next-btn" style="flex:1" ${giftState.messages.length === 0 ? 'disabled' : ''}>
           Next &rarr;
         </button>

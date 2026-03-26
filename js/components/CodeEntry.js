@@ -30,7 +30,7 @@ export function CodeEntry(container) {
 
       <div id="code-success" style="display:none;margin-top:24px" class="pop-in">
         <div class="card-flat text-center" style="background:var(--green);color:var(--dark)">
-          <p style="font-size:1.5rem;margin-bottom:8px">&#127881;</p>
+          <p style="font-size:1.5rem;margin-bottom:8px"></p>
           <p style="font-weight:900;font-size:1.1rem;margin-bottom:4px">Code unlocked!</p>
           <p style="font-weight:700;font-size:.9rem" id="code-success-detail"></p>
         </div>

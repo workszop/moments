@@ -1,9 +1,9 @@
 export function RecipientPicker(container, giftState, onNext) {
   const types = [
-    { id: 'partner', icon: '&#10084;&#65039;', label: 'Partner', color: 'var(--red)' },
-    { id: 'friend', icon: '&#129309;', label: 'Friend', color: 'var(--blue)' },
-    { id: 'kid', icon: '&#11088;', label: 'Kid', color: 'var(--yellow)' },
-    { id: 'colleague', icon: '&#128188;', label: 'Colleague', color: 'var(--green)' }
+    { id: 'partner', label: 'Partner', color: 'var(--red)' },
+    { id: 'friend', label: 'Friend', color: 'var(--blue)' },
+    { id: 'kid', label: 'Kid', color: 'var(--yellow)' },
+    { id: 'colleague', label: 'Colleague', color: 'var(--green)' }
   ];
 
   container.innerHTML = `
@@ -43,8 +43,7 @@ export function RecipientPicker(container, giftState, onNext) {
       background:${selected === t.id ? t.color + '15' : '#fff'};
     `;
     card.innerHTML = `
-      <p style="font-size:2rem;margin-bottom:8px">${t.icon}</p>
-      <p style="font-weight:900;font-size:.95rem">${t.label}</p>
+      <p style="font-weight:900;font-size:1.1rem">${t.label}</p>
     `;
     card.addEventListener('click', () => {
       selected = t.id;

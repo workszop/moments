@@ -17,7 +17,7 @@ export function ContributePage(container, params) {
 
   div.innerHTML = `
     <div class="mb-24">
-      <div class="section-label mb-16">&#10024; contribute</div>
+      <div class="section-label mb-16">contribute</div>
       <h2 class="title-md mb-8">Add a moment</h2>
       <p class="subtitle mb-24">
         Someone invited you to add a heartfelt message. Write something warm &mdash; it'll mean the world.
@@ -57,13 +57,13 @@ export function ContributePage(container, params) {
     </div>
 
     <button class="btn-primary w-full mb-16" id="contrib-submit-btn">
-      Send moment &#10084;&#65039;
+      Send moment
     </button>
 
     <div id="contrib-error" style="color:var(--red);font-size:14px;font-weight:700;display:none"></div>
     <div id="contrib-success" style="display:none" class="pop-in">
       <div class="card-flat text-center" style="background:var(--green);border:3px solid var(--dark);border-radius:20px;padding:24px">
-        <p style="font-size:2rem;margin-bottom:8px">&#127881;</p>
+        <p style="font-size:1.1rem;font-weight:900;margin-bottom:8px"></p>
         <p style="font-weight:900;font-size:1.1rem;margin-bottom:4px">Moment sent!</p>
         <p style="font-weight:700;font-size:.85rem;color:rgba(0,0,0,.6)">
           Your message has been added. They're going to love it.

@@ -5,7 +5,7 @@ export function CodeReveal(container, giftState) {
 
   container.innerHTML = `
     <div class="text-center">
-      <div style="font-size:3rem;margin-bottom:16px" class="pop-in">&#127881;</div>
+      <div style="font-size:1.5rem;font-weight:900;margin-bottom:16px" class="pop-in">Congratulations!</div>
       <h2 class="title-md mb-8 pop-in">Gift created!</h2>
       <p class="subtitle mb-24">
         Give this code to ${giftState.recipientName || 'your person'} so they can unlock their moments.
@@ -41,12 +41,12 @@ export function CodeReveal(container, giftState) {
 
       ${navigator.share ? `
         <button class="btn-secondary w-full mb-16" id="share-code-btn">
-          &#128228; Share code
+          Share code
         </button>
       ` : ''}
 
       <button class="btn-primary w-full mb-12" id="reveal-open-btn">
-        &#9825; Open the moments
+        Open the moments
       </button>
       <button class="btn-secondary w-full" id="reveal-home-btn">
         Back to home

@@ -35,21 +35,21 @@ export function InviteShare(container, giftState, { onNext, onBack }) {
 
     ${navigator.share ? `
       <button class="btn-secondary w-full mb-24" id="native-share-btn">
-        &#128228; Share via...
+        Share via...
       </button>
     ` : ''}
 
     <div style="background:#fff;border:3px solid var(--dark);border-radius:20px;padding:24px;margin-bottom:24px">
       <p style="font-size:.9rem;font-weight:700;color:#888;line-height:1.6">
-        &#128161; <strong>This step is optional.</strong> You can skip it and finalize the gift now.
+        <strong>This step is optional.</strong> You can skip it and finalize the gift now.
         Contributors can still be added later using the invite link.
       </p>
     </div>
 
     <div style="display:flex;gap:12px">
-      <button class="btn-secondary" id="invite-back-btn">&#8592; Back</button>
+      <button class="btn-secondary" id="invite-back-btn">Back</button>
       <button class="btn-primary" id="invite-done-btn" style="flex:1">
-        Finalize gift &#127873;
+        Finalize gift
       </button>
     </div>
   `;

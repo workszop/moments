@@ -22,7 +22,7 @@ export function CardViewer(container) {
     const empty = document.createElement('div');
     empty.className = 'view text-center fade-in';
     empty.innerHTML = `
-      <p style="font-size:2rem;margin-bottom:16px">&#128148;</p>
+      <p style="font-size:1.5rem;margin-bottom:16px"></p>
       <h2 class="title-md mb-12">No moments yet</h2>
       <p class="subtitle mb-24">Unlock a code or start your journal to see cards here.</p>
       <button class="btn-primary" id="empty-go-codes">Enter a code</button>
@@ -47,7 +47,7 @@ export function CardViewer(container) {
       <div class="card-swipe-wrapper">
         <div class="card-flip" id="moment-card">
           <div class="card-flip-face card-flip-front">
-            <p style="font-size:3rem;margin-bottom:16px">&#10024;</p>
+            <p style="font-size:3rem;margin-bottom:16px"></p>
             <p style="font-weight:900;font-size:1.2rem">your moment</p>
             <p style="font-weight:700;font-size:.85rem;opacity:.7;margin-top:8px">tap to reveal</p>
           </div>
@@ -57,9 +57,9 @@ export function CardViewer(container) {
       </div>
     </div>
     <div style="margin-top:24px;display:flex;gap:12px;align-items:center">
-      <button class="fav-btn" id="fav-toggle" title="Favorite">&#9825;</button>
+      <button class="fav-btn" id="fav-toggle" title="Favorite">Save</button>
       <span style="font-size:13px;font-weight:700;color:#aaa" id="card-counter"></span>
-      <button class="btn-secondary btn-small" id="next-card-btn">Next &#8594;</button>
+      <button class="btn-secondary btn-small" id="next-card-btn">Next</button>
     </div>
   `;
 
@@ -93,7 +93,7 @@ export function CardViewer(container) {
       <p style="font-size:.85rem;font-weight:800;color:#aaa">&mdash; ${msg.author}</p>
     `;
 
-    favBtn.innerHTML = store.isFavorite(msg.message_id) ? '&#9829;' : '&#9825;';
+    favBtn.innerHTML = store.isFavorite(msg.message_id) ? 'Saved' : 'Save';
     favBtn.classList.toggle('active', store.isFavorite(msg.message_id));
     favBtn.style.color = store.isFavorite(msg.message_id) ? 'var(--red)' : '#aaa';
 
@@ -138,7 +138,7 @@ export function CardViewer(container) {
     const msg = messages[currentIndex];
     if (msg) {
       store.toggleFavorite(msg.message_id);
-      favBtn.innerHTML = store.isFavorite(msg.message_id) ? '&#9829;' : '&#9825;';
+      favBtn.innerHTML = store.isFavorite(msg.message_id) ? 'Saved' : 'Save';
       favBtn.classList.toggle('active', store.isFavorite(msg.message_id));
       favBtn.style.color = store.isFavorite(msg.message_id) ? 'var(--red)' : '#aaa';
     }

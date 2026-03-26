@@ -26,7 +26,7 @@ export function FavoritesList(container) {
     if (favs.length === 0) {
       div.innerHTML = `
         <div class="text-center" style="padding:40px 0">
-          <p style="font-size:2rem;margin-bottom:16px">&#9825;</p>
+          <p style="font-size:1.5rem;margin-bottom:16px"></p>
           <h2 class="title-md mb-12">No favorites yet</h2>
           <p class="subtitle mb-24">Tap the heart on any card to save it here.</p>
           <button class="btn-primary" id="favs-go-card">Open a card</button>
@@ -38,7 +38,7 @@ export function FavoritesList(container) {
     }
 
     div.innerHTML = `
-      <h2 class="title-md mb-8">&#9829; Favorites</h2>
+      <h2 class="title-md mb-8">Favorites</h2>
       <p class="subtitle mb-24">${favs.length} saved moment${favs.length !== 1 ? 's' : ''}</p>
       <div class="flex-col gap-16 w-full" id="favs-list"></div>
     `;
@@ -55,7 +55,7 @@ export function FavoritesList(container) {
       card.innerHTML = `
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
           <span class="chip ${typeClass}" style="font-size:11px">${typeLabel}</span>
-          <button class="fav-btn active" data-id="${msg.message_id}" style="color:var(--red)">&#9829;</button>
+          <button class="fav-btn active" data-id="${msg.message_id}" style="color:var(--red)">Saved</button>
         </div>
         <p style="font-size:1rem;font-weight:700;line-height:1.6;margin-bottom:10px">
           "${msg.content}"

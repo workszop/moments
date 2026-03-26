@@ -10,7 +10,7 @@ export function PrivateVault(container) {
 
     div.innerHTML = `
       <div class="text-center mb-32">
-        <div class="section-label mb-16">&#128216; my journal</div>
+        <div class="section-label mb-16">my journal</div>
         <h2 class="title-md mb-8">Private Vault</h2>
         <p class="subtitle">What made you smile today?</p>
       </div>

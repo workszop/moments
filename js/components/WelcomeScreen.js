@@ -9,7 +9,7 @@ export function WelcomeScreen(container) {
 
   div.innerHTML = `
     <div class="mb-32">
-      <div class="section-label mb-16">&#10024; pick-me-up</div>
+      <div class="section-label mb-16">pick-me-up</div>
       <h1 class="title-lg mb-12">
         a little <span class="highlight">moment</span><br>
         just for you
@@ -21,20 +21,20 @@ export function WelcomeScreen(container) {
 
     <div class="flex-col gap-12 w-full" style="max-width:340px">
       <button class="btn-primary w-full" id="welcome-enter-code">
-        &#128274; I have a code
+        I have a code
       </button>
       <button class="btn-secondary w-full" id="welcome-create-gift">
-        &#127873; Create a gift
+        Create a gift
       </button>
       <button class="btn-secondary w-full" id="welcome-journal">
-        &#128216; Start my journal
+        Start my journal
       </button>
     </div>
 
     ${hasCodes ? `
       <div style="margin-top:24px">
         <button class="btn-primary" id="welcome-open-card">
-          &#9825; Open today's card
+          Open today's card
         </button>
       </div>
     ` : `

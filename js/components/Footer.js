@@ -3,7 +3,7 @@ export function Footer() {
   footer.className = 'site-footer';
   footer.innerHTML = `
     <div class="footer-brand">
-      <span class="footer-brand-icon">&#10024;</span>
+      <span class="footer-brand-icon"></span>
       <span>moments</span>
     </div>
     <span class="footer-tagline">the app for those we love</span>

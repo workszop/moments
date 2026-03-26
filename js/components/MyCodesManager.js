@@ -39,7 +39,7 @@ export function MyCodesManager(container) {
       `}
 
       <div style="margin-top:32px">
-        <button class="btn-secondary btn-small" id="codes-back-btn">&#8592; Back</button>
+        <button class="btn-secondary btn-small" id="codes-back-btn">Back</button>
       </div>
     `;
 
