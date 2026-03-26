@@ -1,5 +1,4 @@
 export function InviteShare(container, giftState, { onNext, onBack }) {
-  // Generate a simple invite token
   const inviteToken = giftState._inviteToken || ('inv_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6));
   giftState._inviteToken = inviteToken;
 
@@ -7,54 +6,47 @@ export function InviteShare(container, giftState, { onNext, onBack }) {
   const inviteLink = `${baseUrl}#contribute/${inviteToken}`;
 
   container.innerHTML = `
-    <div class="text-center mb-24">
-      <h2 class="title-md mb-8">Invite friends to contribute</h2>
+    <div class="text-center mb-20">
+      <div class="title mb-4">Invite friends to contribute</div>
       <p class="subtitle">
         Share this link with others so they can add their own moments
         ${giftState.recipientName ? `for ${giftState.recipientName}` : ''}.
       </p>
     </div>
 
-    <div class="w-full mb-24" style="background:var(--yellow);border:3px solid var(--dark);border-radius:20px;padding:24px;box-shadow:5px 5px 0 var(--dark)">
-      <p style="font-size:13px;font-weight:800;margin-bottom:12px">Share this link</p>
-      <div style="display:flex;gap:8px;align-items:center">
+    <div class="highlight-box w-full mb-16">
+      <p class="label mb-10">Share this link</p>
+      <div class="flex-row gap-8">
         <input
           type="text"
-          class="input"
+          class="input flex-1"
           id="invite-link"
           value="${inviteLink}"
           readonly
-          style="font-size:13px;background:#fff;cursor:text"
+          style="font-size:12px;background:#fff;cursor:text"
         >
-        <button class="btn-primary btn-small" id="copy-link-btn">Copy</button>
+        <button class="btn btn-primary btn-small" id="copy-link-btn">Copy</button>
       </div>
-      <p id="copy-feedback" style="font-size:12px;font-weight:700;color:var(--dark);margin-top:8px;opacity:0;transition:opacity .2s">
-        Copied!
-      </p>
+      <p id="copy-feedback" class="hint mt-8" style="opacity:0;transition:opacity .2s">Copied!</p>
     </div>
 
     ${navigator.share ? `
-      <button class="btn-secondary w-full mb-24" id="native-share-btn">
+      <button class="btn btn-secondary btn-full mb-16" id="native-share-btn">
         Share via...
       </button>
     ` : ''}
 
-    <div style="background:#fff;border:3px solid var(--dark);border-radius:20px;padding:24px;margin-bottom:24px">
-      <p style="font-size:.9rem;font-weight:700;color:#888;line-height:1.6">
-        <strong>This step is optional.</strong> You can skip it and finalize the gift now.
-        Contributors can still be added later using the invite link.
-      </p>
+    <div class="info-box w-full mb-16">
+      <p><strong>This step is optional.</strong> You can skip it and finalize the gift now.
+      Contributors can still be added later using the invite link.</p>
     </div>
 
-    <div style="display:flex;gap:12px">
-      <button class="btn-secondary" id="invite-back-btn">Back</button>
-      <button class="btn-primary" id="invite-done-btn" style="flex:1">
-        Finalize gift
-      </button>
+    <div class="flex-row gap-10">
+      <button class="btn btn-secondary" id="invite-back-btn">Back</button>
+      <button class="btn btn-primary flex-1" id="invite-done-btn">Finalize gift</button>
     </div>
   `;
 
-  // Copy link
   const copyBtn = container.querySelector('#copy-link-btn');
   const copyFeedback = container.querySelector('#copy-feedback');
   const linkInput = container.querySelector('#invite-link');
@@ -62,6 +54,7 @@ export function InviteShare(container, giftState, { onNext, onBack }) {
   copyBtn.addEventListener('click', () => {
     navigator.clipboard.writeText(inviteLink).then(() => {
       copyFeedback.style.opacity = '1';
+      window.showToast('Link copied!');
       setTimeout(() => { copyFeedback.style.opacity = '0'; }, 2000);
     }).catch(() => {
       linkInput.select();
@@ -71,7 +64,6 @@ export function InviteShare(container, giftState, { onNext, onBack }) {
     });
   });
 
-  // Native share
   const shareBtn = container.querySelector('#native-share-btn');
   if (shareBtn) {
     shareBtn.addEventListener('click', () => {

@@ -7,23 +7,23 @@ export function RecipientPicker(container, giftState, onNext) {
   ];
 
   container.innerHTML = `
-    <div class="text-center mb-24">
-      <h2 class="title-md mb-8">Who is this gift for?</h2>
+    <div class="text-center mb-20">
+      <div class="title mb-4">Who is this gift for?</div>
       <p class="subtitle">Choose the type of relationship.</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px" id="type-grid"></div>
+    <div class="grid-2 mb-16" id="type-grid"></div>
 
-    <div class="mb-16">
-      <label style="font-size:14px;font-weight:800;display:block;margin-bottom:8px">Their name</label>
+    <div class="mb-12">
+      <p class="label mb-8">Their name</p>
       <input type="text" class="input" id="recipient-name" placeholder="e.g. Sarah" value="${giftState.recipientName}">
     </div>
-    <div class="mb-24">
-      <label style="font-size:14px;font-weight:800;display:block;margin-bottom:8px">Your name</label>
+    <div class="mb-20">
+      <p class="label mb-8">Your name</p>
       <input type="text" class="input" id="creator-name" placeholder="e.g. Alex" value="${giftState.creatorName}">
     </div>
 
-    <button class="btn-primary w-full" id="pick-next-btn" disabled>Next &rarr;</button>
+    <button class="btn btn-primary btn-full" id="pick-next-btn" disabled>Next</button>
   `;
 
   const grid = container.querySelector('#type-grid');
@@ -37,32 +37,27 @@ export function RecipientPicker(container, giftState, onNext) {
     const card = document.createElement('button');
     card.className = 'card';
     card.dataset.type = t.id;
+    const isActive = selected === t.id;
     card.style.cssText = `
-      cursor:pointer;text-align:center;padding:24px 16px;
-      border:3px solid ${selected === t.id ? t.color : 'var(--dark)'};
-      background:${selected === t.id ? t.color + '15' : '#fff'};
+      cursor:pointer;text-align:center;padding:20px 14px;
+      border-color:${isActive ? t.color : ''};
+      background:${isActive ? t.color + '15' : '#fff'};
     `;
-    card.innerHTML = `
-      <p style="font-weight:900;font-size:1.1rem">${t.label}</p>
-    `;
+    card.innerHTML = `<p style="font-weight:900;font-size:16px">${t.label}</p>`;
     card.addEventListener('click', () => {
       selected = t.id;
       grid.querySelectorAll('.card').forEach(c => {
-        c.style.border = '3px solid var(--dark)';
+        c.style.borderColor = '';
         c.style.background = '#fff';
       });
-      card.style.border = `3px solid ${t.color}`;
+      card.style.borderColor = t.color;
       card.style.background = t.color + '15';
-      checkReady();
+      nextBtn.disabled = false;
     });
     grid.appendChild(card);
   });
 
-  function checkReady() {
-    nextBtn.disabled = !selected;
-  }
-
-  if (selected) checkReady();
+  if (selected) nextBtn.disabled = false;
 
   nextBtn.addEventListener('click', () => {
     giftState.recipientType = selected;

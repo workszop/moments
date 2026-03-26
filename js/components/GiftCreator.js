@@ -7,8 +7,7 @@ import { CodeReveal } from './CodeReveal.js';
 
 export function GiftCreator(container) {
   const div = document.createElement('div');
-  div.className = 'view fade-in';
-  div.style.maxWidth = '600px';
+  div.className = 'view view-scroll fade-in';
 
   const giftState = {
     step: 1,
@@ -20,28 +19,12 @@ export function GiftCreator(container) {
   };
 
   function renderStepIndicator() {
-    const steps = [
-      { num: 1, label: 'For whom' },
-      { num: 2, label: 'Messages' },
-      { num: 3, label: 'Invite' },
-      { num: 4, label: 'Done' }
-    ];
-
+    const steps = [1, 2, 3, 4];
     return `
-      <div style="display:flex;gap:8px;align-items:center;justify-content:center;margin-bottom:32px">
-        ${steps.map(s => `
-          <div style="display:flex;align-items:center;gap:8px">
-            <div style="
-              width:36px;height:36px;border-radius:12px;
-              border:3px solid var(--dark);
-              background:${giftState.step >= s.num ? 'var(--purple)' : '#fff'};
-              color:${giftState.step >= s.num ? '#fff' : 'var(--dark)'};
-              display:flex;align-items:center;justify-content:center;
-              font-size:.9rem;font-weight:900;
-              box-shadow:2px 2px 0 var(--dark);
-            ">${s.num}</div>
-            ${s.num < 4 ? '<div style="width:20px;height:3px;background:var(--dark);border-radius:2px"></div>' : ''}
-          </div>
+      <div class="steps-bar">
+        ${steps.map((s, i) => `
+          <div class="step-dot ${giftState.step >= s ? 'step-dot-active' : 'step-dot-inactive'}">${s}</div>
+          ${i < 3 ? '<div class="step-line"></div>' : ''}
         `).join('')}
       </div>
     `;
@@ -81,9 +64,7 @@ export function GiftCreator(container) {
     const parts = [3, 4, 3];
     return parts.map(len => {
       let s = '';
-      for (let i = 0; i < len; i++) {
-        s += chars[Math.floor(Math.random() * chars.length)];
-      }
+      for (let i = 0; i < len; i++) s += chars[Math.floor(Math.random() * chars.length)];
       return s;
     }).join('-');
   }
@@ -92,15 +73,12 @@ export function GiftCreator(container) {
     const code = generateCode();
     giftState.generatedCode = code;
 
-    // Save to store
-    const codeEntry = {
+    store.state.accessCodes.push({
       code_id: code,
       creator_name: giftState.creatorName || 'someone special',
       recipient_name: giftState.recipientName || giftState.recipientType || 'someone',
       is_active: true
-    };
-
-    store.state.accessCodes.push(codeEntry);
+    });
 
     giftState.messages.forEach((msg, i) => {
       store.state.messages.push({
@@ -120,7 +98,6 @@ export function GiftCreator(container) {
       messageCount: giftState.messages.length
     });
 
-    // Persist
     store._persist();
     store._notify();
   }

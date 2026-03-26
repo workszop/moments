@@ -5,65 +5,42 @@ export function CodeReveal(container, giftState) {
 
   container.innerHTML = `
     <div class="text-center">
-      <div style="font-size:1.5rem;font-weight:900;margin-bottom:16px" class="pop-in">Congratulations!</div>
-      <h2 class="title-md mb-8 pop-in">Gift created!</h2>
-      <p class="subtitle mb-24">
+      <div class="title mb-4 pop-in">Gift created!</div>
+      <p class="subtitle mb-20">
         Give this code to ${giftState.recipientName || 'your person'} so they can unlock their moments.
       </p>
 
-      <div style="
-        background:var(--yellow);
-        border:3px solid var(--dark);
-        border-radius:28px;
-        padding:32px 24px;
-        box-shadow:8px 8px 0 var(--dark);
-        margin-bottom:32px;
-        position:relative;
-        overflow:hidden;
-      " class="pop-in">
-        <p style="font-size:13px;font-weight:800;margin-bottom:12px;color:rgba(0,0,0,.5)">Access code</p>
-        <p style="font-size:clamp(1.6rem,5vw,2.2rem);font-weight:900;letter-spacing:4px;font-family:monospace" id="reveal-code">
-          ${code}
-        </p>
-        <button class="btn-primary btn-small" id="copy-code-btn" style="margin-top:16px">
-          Copy code
-        </button>
-        <p id="copy-code-feedback" style="font-size:12px;font-weight:700;margin-top:8px;opacity:0;transition:opacity .2s">
-          Copied!
-        </p>
+      <div class="code-card mb-20 pop-in">
+        <div class="code-card-label">Access code</div>
+        <div class="code-card-code" id="reveal-code">${code}</div>
+        <button class="btn btn-primary btn-small" id="copy-code-btn">Copy code</button>
+        <p id="copy-code-feedback" class="hint mt-8" style="opacity:0;transition:opacity .2s;color:rgba(0,0,0,.5)">Copied!</p>
       </div>
 
-      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px">
+      <div class="flex-row gap-8 flex-wrap flex-center mb-20">
         <span class="chip">${giftState.messages.length} moment${giftState.messages.length !== 1 ? 's' : ''}</span>
         <span class="chip chip-purple">for ${giftState.recipientName || giftState.recipientType || 'someone'}</span>
         ${giftState.creatorName ? `<span class="chip">from ${giftState.creatorName}</span>` : ''}
       </div>
 
       ${navigator.share ? `
-        <button class="btn-secondary w-full mb-16" id="share-code-btn">
-          Share code
-        </button>
+        <button class="btn btn-secondary btn-full mb-12" id="share-code-btn">Share code</button>
       ` : ''}
 
-      <button class="btn-primary w-full mb-12" id="reveal-open-btn">
-        Open the moments
-      </button>
-      <button class="btn-secondary w-full" id="reveal-home-btn">
-        Back to home
-      </button>
+      <button class="btn btn-primary btn-full mb-10" id="reveal-open-btn">Open the moments</button>
+      <button class="btn btn-secondary btn-full" id="reveal-home-btn">Back to home</button>
     </div>
   `;
 
-  // Confetti effect
-  launchConfetti(container);
+  launchConfetti();
 
-  // Copy code
   const copyBtn = container.querySelector('#copy-code-btn');
   const feedback = container.querySelector('#copy-code-feedback');
 
   copyBtn.addEventListener('click', () => {
     navigator.clipboard.writeText(code).then(() => {
       feedback.style.opacity = '1';
+      window.showToast('Code copied!');
       setTimeout(() => { feedback.style.opacity = '0'; }, 2000);
     }).catch(() => {
       const range = document.createRange();
@@ -76,7 +53,6 @@ export function CodeReveal(container, giftState) {
     });
   });
 
-  // Native share
   const shareBtn = container.querySelector('#share-code-btn');
   if (shareBtn) {
     shareBtn.addEventListener('click', () => {
@@ -91,44 +67,24 @@ export function CodeReveal(container, giftState) {
   container.querySelector('#reveal-home-btn').addEventListener('click', () => router.navigate('welcome'));
 }
 
-function launchConfetti(container) {
+function launchConfetti() {
   const colors = ['#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#C77DFF'];
-  const confettiContainer = document.createElement('div');
-  confettiContainer.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden';
-  document.body.appendChild(confettiContainer);
+  const el = document.createElement('div');
+  el.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden';
+  document.body.appendChild(el);
 
   for (let i = 0; i < 50; i++) {
-    const piece = document.createElement('div');
+    const p = document.createElement('div');
     const color = colors[Math.floor(Math.random() * colors.length)];
-    const left = Math.random() * 100;
-    const delay = Math.random() * 600;
     const size = 6 + Math.random() * 8;
-    const rotation = Math.random() * 360;
-
-    piece.style.cssText = `
-      position:absolute;
-      top:-20px;left:${left}%;
-      width:${size}px;height:${size * 0.6}px;
-      background:${color};
-      border-radius:2px;
-      transform:rotate(${rotation}deg);
-      animation:confettiFall ${1.5 + Math.random()}s ease-out ${delay}ms forwards;
+    p.style.cssText = `
+      position:absolute;top:-20px;left:${Math.random() * 100}%;
+      width:${size}px;height:${size * 0.6}px;background:${color};
+      border-radius:2px;transform:rotate(${Math.random() * 360}deg);
+      animation:confettiFall ${1.5 + Math.random()}s ease-out ${Math.random() * 600}ms forwards;
     `;
-    confettiContainer.appendChild(piece);
+    el.appendChild(p);
   }
 
-  // Add keyframes if not present
-  if (!document.querySelector('#confetti-style')) {
-    const style = document.createElement('style');
-    style.id = 'confetti-style';
-    style.textContent = `
-      @keyframes confettiFall {
-        0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-        100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-      }
-    `;
-    document.head.appendChild(style);
-  }
-
-  setTimeout(() => confettiContainer.remove(), 3000);
+  setTimeout(() => el.remove(), 3000);
 }

@@ -2,40 +2,37 @@ import { store } from '../store.js';
 
 export function PrivateVault(container) {
   const div = document.createElement('div');
-  div.className = 'view fade-in';
-  div.style.maxWidth = '600px';
+  div.className = 'view view-scroll fade-in';
 
   function render() {
     const entries = store.getPrivateEntries();
 
     div.innerHTML = `
-      <div class="text-center mb-32">
-        <div class="section-label mb-16">my journal</div>
-        <h2 class="title-md mb-8">Private Vault</h2>
+      <div class="text-center mb-20">
+        <div class="section-label mb-12">my journal</div>
+        <div class="title mb-4">Private Vault</div>
         <p class="subtitle">What made you smile today?</p>
       </div>
 
-      <div class="w-full mb-24">
+      <div class="form-panel w-full mb-16">
         <textarea
-          class="textarea mb-12"
+          class="textarea mb-10"
           id="vault-input"
           placeholder="Write a happy thought, a memory, something you're grateful for..."
           rows="3"
         ></textarea>
-        <button class="btn-primary w-full" id="vault-save-btn">
+        <button class="btn btn-primary btn-full" id="vault-save-btn">
           Save moment
         </button>
       </div>
 
       ${entries.length > 0 ? `
         <div class="w-full">
-          <p style="font-size:13px;font-weight:800;color:#aaa;margin-bottom:16px">
-            ${entries.length} private moment${entries.length !== 1 ? 's' : ''}
-          </p>
-          <div class="flex-col gap-12" id="vault-list"></div>
+          <p class="label mb-12">${entries.length} private moment${entries.length !== 1 ? 's' : ''}</p>
+          <div class="flex-col gap-10" id="vault-list"></div>
         </div>
       ` : `
-        <p class="subtitle text-center" style="font-size:14px;margin-top:16px">
+        <p class="hint text-center mt-8">
           Your entries will appear here and show up in your card feed.
         </p>
       `}
@@ -46,20 +43,16 @@ export function PrivateVault(container) {
       entries.slice().reverse().forEach(entry => {
         const card = document.createElement('div');
         card.className = 'card-flat';
-        card.style.cssText = 'background:#faf5ff;border:2.5px solid var(--dark);border-radius:16px;padding:20px';
         card.innerHTML = `
-          <p style="font-size:.95rem;font-weight:700;line-height:1.6;color:var(--dark)">
+          <p style="font-size:14px;font-weight:700;line-height:1.6;color:var(--dark)">
             "${entry.content}"
           </p>
-          <p style="font-size:.75rem;font-weight:700;color:#bbb;margin-top:10px">
-            &mdash; you
-          </p>
+          <p style="font-size:11px;font-weight:700;color:#bbb;margin-top:8px">&mdash; you</p>
         `;
         list.appendChild(card);
       });
     }
 
-    // Bind save
     const input = div.querySelector('#vault-input');
     const saveBtn = div.querySelector('#vault-save-btn');
 
@@ -71,13 +64,12 @@ export function PrivateVault(container) {
         return;
       }
       store.addPrivateEntry(text);
+      window.showToast('Moment saved');
       render();
     });
 
     input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-        saveBtn.click();
-      }
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) saveBtn.click();
     });
   }
 

@@ -1,6 +1,5 @@
 import { router } from './router.js';
-import { Header } from './components/Header.js';
-import { Footer } from './components/Footer.js';
+import { renderHeader } from './components/Header.js';
 import { WelcomeScreen } from './components/WelcomeScreen.js';
 import { CodeEntry } from './components/CodeEntry.js';
 import { CardViewer } from './components/CardViewer.js';
@@ -10,14 +9,21 @@ import { MyCodesManager } from './components/MyCodesManager.js';
 import { GiftCreator } from './components/GiftCreator.js';
 import { ContributePage } from './components/ContributePage.js';
 
+// Toast helper
+window.showToast = function(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastT);
+  window._toastT = setTimeout(() => t.classList.remove('show'), 1800);
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-  const body = document.body;
+  const headerEl = document.getElementById('header');
   const appEl = document.getElementById('app');
 
-  // Mount header & footer
-  const header = Header();
-  body.insertBefore(header, appEl);
-  body.appendChild(Footer());
+  // Mount header
+  renderHeader(headerEl);
 
   // Register routes
   router
