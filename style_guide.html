@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BeeHonest — Questions that bring you closer</title>
+<meta name="description" content="BeeHonest is a deck of 52 conversation cards designed to help you get to know yourself and others. No stress. No awkwardness. Just honest conversations.">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="icon" type="image/png" href="favicon-96x96.png" sizes="96x96" />
+<link rel="shortcut icon" href="favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-title" content="BeeHonest" />
+<meta name="theme-color" content="#FFF8F0" />
+<link rel="manifest" href="site.webmanifest" />
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --cream:#FFF8F0;
+  --dark:#1a1a2e;
+  --red:#FF6B6B;
+  --yellow:#FFD93D;
+  --green:#6BCB77;
+  --blue:#4D96FF;
+  --purple:#C77DFF;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  font-family:'Nunito',system-ui,sans-serif;
+  background:var(--cream);
+  color:var(--dark);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ── HEADER ── */
+.site-header{
+  position:sticky;top:0;z-index:100;
+  background:var(--cream);
+  border-bottom:3px solid var(--dark);
+  padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.logo-lockup{display:flex;align-items:center;gap:10px}
+.logo-img{width:38px;height:38px;object-fit:contain}
+.logo-name{font-size:1.2rem;font-weight:900;letter-spacing:-.02em}
+.nav-cta{
+  display:inline-flex;align-items:center;gap:7px;
+  background:var(--red);color:#fff;
+  border:3px solid var(--dark);border-radius:14px;
+  padding:9px 20px;font-size:14px;font-weight:800;
+  font-family:inherit;cursor:pointer;text-decoration:none;
+  box-shadow:4px 4px 0 var(--dark);
+  transition:transform .12s,box-shadow .12s;
+}
+.nav-cta:hover{transform:translateY(-2px);box-shadow:4px 6px 0 var(--dark)}
+.nav-cta:active{transform:translateY(2px);box-shadow:2px 2px 0 var(--dark)}
+
+/* ── HERO ── */
+.hero{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:40px;
+  align-items:center;
+  max-width:1100px;margin:0 auto;
+  padding:72px 40px 80px;
+}
+.hero-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--yellow);
+  border:3px solid var(--dark);border-radius:99px;
+  padding:6px 16px;font-size:13px;font-weight:800;
+  box-shadow:3px 3px 0 var(--dark);
+  margin-bottom:20px;
+}
+.hero-title{
+  font-size:clamp(2.4rem,5vw,3.6rem);
+  font-weight:900;
+  line-height:1.1;
+  letter-spacing:-.03em;
+  margin-bottom:10px;
+}
+.hero-title em{
+  font-style:normal;
+  background:var(--blue);
+  color:#fff;
+  padding:2px 10px;
+  border-radius:10px;
+  border:3px solid var(--dark);
+  display:inline-block;
+  transform:rotate(-1deg);
+}
+.hero-subtitle{
+  font-size:1.15rem;font-weight:700;
+  color:#555;line-height:1.6;
+  margin-bottom:12px;max-width:480px;
+}
+.hero-sub2{
+  font-size:1rem;font-weight:700;
+  color:#888;line-height:1.5;
+  margin-bottom:32px;max-width:480px;
+}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+.btn-hero{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--red);color:#fff;
+  border:3px solid var(--dark);border-radius:16px;
+  padding:16px 30px;font-size:16px;font-weight:900;
+  font-family:inherit;cursor:pointer;text-decoration:none;
+  box-shadow:5px 5px 0 var(--dark);
+  transition:transform .12s,box-shadow .12s;
+}
+.btn-hero:hover{transform:translateY(-3px);box-shadow:5px 8px 0 var(--dark)}
+.btn-hero:active{transform:translateY(2px);box-shadow:2px 2px 0 var(--dark)}
+.btn-hero-sec{
+  display:inline-flex;align-items:center;gap:8px;
+  background:#fff;color:var(--dark);
+  border:3px solid var(--dark);border-radius:16px;
+  padding:16px 24px;font-size:16px;font-weight:800;
+  font-family:inherit;cursor:pointer;text-decoration:none;
+  box-shadow:5px 5px 0 var(--dark);
+  transition:transform .12s,box-shadow .12s;
+}
+.btn-hero-sec:hover{transform:translateY(-3px);box-shadow:5px 8px 0 var(--dark)}
+.btn-hero-sec:active{transform:translateY(2px);box-shadow:2px 2px 0 var(--dark)}
+.cta-buttons{display:flex;justify-content:center;align-items:center;gap:32px;flex-wrap:wrap;margin-bottom:8px;position:relative;z-index:1}
+.btn-hero-hive{padding:16px 30px;font-size:16px;font-weight:900}
+
+/* Phone mockups */
+.hero-visual{
+  display:flex;
+  justify-content:center;
+  align-items:flex-end;
+  gap:-20px;
+  position:relative;
+}
+.phone-wrap{
+  position:relative;
+  width:210px;
+  flex-shrink:0;
+}
+.phone-wrap:nth-child(2){
+  transform:translateX(-30px) rotate(4deg);
+  z-index:2;
+}
+.phone-wrap:nth-child(1){
+  transform:translateX(30px) rotate(-4deg);
+  z-index:1;
+}
+.phone-img{
+  width:100%;border-radius:28px;
+  border:3.5px solid var(--dark);
+  box-shadow:6px 6px 0 var(--dark);
+  display:block;
+}
+
+/* ── PITCH ── */
+.pitch{
+  background:var(--dark);
+  padding:64px 40px;
+  text-align:center;
+}
+.pitch-inner{max-width:700px;margin:0 auto}
+.pitch h2{
+  font-size:clamp(1.6rem,3.5vw,2.4rem);
+  font-weight:900;color:#fff;
+  line-height:1.3;margin-bottom:16px;
+}
+.pitch h2 mark{
+  background:var(--yellow);color:var(--dark);
+  padding:2px 10px;border-radius:8px;
+}
+.pitch p{
+  font-size:1.1rem;font-weight:700;
+  color:rgba(255,255,255,.65);
+  line-height:1.7;margin-bottom:20px;
+}
+.dots{
+  display:flex;justify-content:center;gap:8px;margin-top:8px;
+}
+.dot{
+  width:12px;height:12px;border-radius:50%;
+  border:2.5px solid rgba(255,255,255,.3);
+}
+.dot:nth-child(1){background:var(--red)}
+.dot:nth-child(2){background:var(--yellow)}
+.dot:nth-child(3){background:var(--green)}
+.dot:nth-child(4){background:var(--blue)}
+
+/* ── FEATURES ── */
+.features{padding:80px 40px;max-width:1100px;margin:0 auto}
+.section-label{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--green);
+  border:3px solid var(--dark);border-radius:99px;
+  padding:6px 16px;font-size:13px;font-weight:800;
+  box-shadow:3px 3px 0 var(--dark);
+  margin-bottom:20px;
+}
+.section-title{
+  font-size:clamp(1.8rem,3.5vw,2.6rem);
+  font-weight:900;letter-spacing:-.03em;
+  margin-bottom:48px;
+}
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+  gap:20px;
+}
+.feature-card{
+  background:#fff;
+  border:3px solid var(--dark);border-radius:20px;
+  padding:28px 28px 30px;
+  box-shadow:5px 5px 0 var(--dark);
+  transition:transform .15s,box-shadow .15s;
+}
+.feature-card:hover{transform:translateY(-4px);box-shadow:5px 9px 0 var(--dark)}
+.feature-card h3{
+  font-size:1.1rem;font-weight:900;
+  margin-bottom:8px;letter-spacing:-.01em;
+}
+.feature-card p{
+  font-size:.93rem;font-weight:700;
+  color:#666;line-height:1.6;
+}
+
+/* ── HOW IT WORKS ── */
+.how{padding:80px 40px;max-width:1100px;margin:0 auto}
+.how-label{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--red);color:#fff;
+  border:3px solid var(--dark);border-radius:99px;
+  padding:6px 16px;font-size:13px;font-weight:800;
+  box-shadow:3px 3px 0 var(--dark);
+  margin-bottom:20px;
+}
+.how h2{
+  font-size:clamp(1.8rem,3.5vw,2.6rem);
+  font-weight:900;letter-spacing:-.03em;
+  margin-bottom:48px;
+}
+.steps{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
+}
+.step{
+  display:flex;flex-direction:column;gap:14px;
+  padding:28px;
+  background:#fff;
+  border:3px solid var(--dark);border-radius:20px;
+  box-shadow:5px 5px 0 var(--dark);
+}
+.step-num{
+  width:48px;height:48px;
+  border-radius:14px;border:3px solid var(--dark);
+  background:var(--dark);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;font-weight:900;
+  box-shadow:3px 3px 0 rgba(0,0,0,.15);
+}
+.step h3{font-size:1.05rem;font-weight:900}
+.step p{font-size:.9rem;font-weight:700;color:#666;line-height:1.6}
+
+/* ── BEE CTA ── */
+.bee-cta{
+  padding:80px 40px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.bee-cta-inner{
+  max-width:680px;margin:0 auto;
+  background:var(--yellow);
+  border:3px solid var(--dark);border-radius:28px;
+  padding:56px 40px 48px;
+  box-shadow:8px 8px 0 var(--dark);
+  position:relative;
+}
+.bee-cta-inner h2{
+  font-size:clamp(1.8rem,3.5vw,2.6rem);
+  font-weight:900;letter-spacing:-.03em;
+  margin-bottom:12px;
+}
+.bee-cta-inner p{
+  font-size:1.05rem;font-weight:700;
+  color:rgba(0,0,0,.6);
+  margin-bottom:32px;line-height:1.6;
+}
+.bee-logo{
+  position:absolute;
+  right:-20px;bottom:-10px;
+  width:160px;opacity:.2;
+  pointer-events:none;z-index:0;
+}
+.tagline-chips{
+  display:flex;justify-content:center;flex-wrap:wrap;gap:8px;
+  margin-bottom:32px;
+}
+.chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#fff;
+  border:2.5px solid var(--dark);border-radius:99px;
+  padding:6px 14px;font-size:13px;font-weight:800;
+  box-shadow:2px 2px 0 var(--dark);
+}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--dark);color:rgba(255,255,255,.5);
+  padding:36px 40px;
+  border-top:3px solid rgba(255,255,255,.1);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+}
+.footer-logo{display:flex;align-items:center;gap:8px}
+.footer-logo-img{width:30px;height:30px;object-fit:contain;border-radius:8px}
+.footer-logo span{font-size:1rem;font-weight:900;color:#fff}
+.footer-links{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.footer-links a{
+  color:rgba(255,255,255,.5);text-decoration:none;
+  font-size:13px;font-weight:700;
+  transition:color .15s;
+}
+.footer-links a:hover{color:#fff}
+.footer-copy{font-size:12px;font-weight:700}
+
+/* ── RESPONSIVE ── */
+@media(max-width:760px){
+  .hero{
+    grid-template-columns:1fr;
+    padding:48px 20px 56px;
+    text-align:center;
+  }
+  .hero-subtitle,.hero-sub2{max-width:100%}
+  .hero-actions{justify-content:center}
+  .hero-visual{
+    order:-1;
+    justify-content:center;
+  }
+  .phone-wrap{width:160px}
+  .phone-wrap:nth-child(2){transform:translateX(-20px) rotate(3deg)}
+  .phone-wrap:nth-child(1){transform:translateX(20px) rotate(-3deg)}
+  .pitch{padding:48px 20px}
+  .features{padding:56px 20px}
+  .how{padding:56px 20px}
+  .bee-cta{padding:56px 20px}
+  .bee-cta-inner{padding:40px 24px 36px}
+  footer{
+    flex-direction:column;align-items:flex-start;
+    padding:28px 20px;
+  }
+}
+
+/* ── ANIMATIONS ── */
+@keyframes floatY{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-10px)}
+}
+.float{animation:floatY 4s ease-in-out infinite}
+
+.progress-bar{
+  height:8px;background:var(--dark);border-radius:99px;overflow:hidden;
+  border:2.5px solid var(--dark);margin-top:32px;max-width:300px;
+}
+.progress-bar-fill{
+  height:100%;
+  background:linear-gradient(90deg,var(--red),var(--yellow),var(--green),var(--blue));
+  background-size:300% 100%;
+  animation:barShift 4s linear infinite;
+  border-radius:99px;
+  width:72%;
+}
+@keyframes barShift{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="logo-lockup">
+    <img src="beehonest_transparent.png" alt="BeeHonest bee logo" class="logo-img">
+    <span class="logo-name">BeeHonest</span>
+  </div>
+  <a href="app.html" class="nav-cta">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>
+    Play now
+  </a>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text">
+    <div class="hero-tag">52 conversation cards</div>
+    <h1 class="hero-title">Questions that<br><em>bring you closer</em></h1>
+    <p class="hero-subtitle">BeeHonest is a deck of 52 cards designed to help you genuinely get to know yourself and others.</p>
+    <p class="hero-sub2">No jokes. No awkwardness. Just honest conversations — for any occasion, any age, any group.</p>
+    <div class="hero-actions">
+      <a href="app.html" class="btn-hero">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>
+        Play for free
+      </a>
+      <a href="#how" class="btn-hero-sec">How it works</a>
+    </div>
+    <div class="progress-bar"><div class="progress-bar-fill"></div></div>
+  </div>
+  <div class="hero-visual">
+    <div class="phone-wrap">
+      <img src="screen1.png" alt="BeeHonest app — card deck view" class="phone-img">
+    </div>
+    <div class="phone-wrap float">
+      <img src="screen2.png" alt="BeeHonest app — question revealed" class="phone-img">
+    </div>
+  </div>
+</section>
+
+<!-- PITCH -->
+<section class="pitch">
+  <div class="pitch-inner">
+    <h2>No stress. No <mark>embarrassing</mark> traps.<br>Just real talk.</h2>
+    <p>Questions are open-ended and safe — everyone answers as much or as little as they want. Draw a card, flip to reveal, and let the conversation flow.</p>
+    <div class="dots">
+      <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <div class="section-label">✦ Features</div>
+  <h2 class="section-title">Everything you need,<br>nothing you don't.</h2>
+  <div class="features-grid">
+    <div class="feature-card fc-red">
+      <h3>Zero stress</h3>
+      <p>No embarrassing "funny" traps. Questions are open and safe — each person answers as much as they want.</p>
+    </div>
+    <div class="feature-card fc-yellow">
+      <h3>Any occasion</h3>
+      <p>Long road trip, evening with friends, first day at a new job — just open the app and start talking.</p>
+    </div>
+    <div class="feature-card fc-green">
+      <h3>For everyone</h3>
+      <p>Family, couples, friends, new colleagues. The questions work for every kind of relationship and every age.</p>
+    </div>
+    <div class="feature-card fc-blue">
+      <h3>Two languages</h3>
+      <p>Full Polish and English versions. Switch with one tap — perfect for mixed groups.</p>
+    </div>
+    <div class="feature-card fc-purple">
+      <h3>One screen is enough</h3>
+      <p>The app runs on a single phone. Put it on the table, draw a card, and talk.</p>
+    </div>
+    <div class="feature-card fc-cream">
+      <h3>Always fresh</h3>
+      <p>Cards are shuffled randomly, so every session feels different. 52 questions, endless conversations.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE CARDS -->
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="how-label">✦ How it works</div>
+  <h2>Draw · Flip · Connect</h2>
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <h3>Open the app</h3>
+      <p>No account, no setup. Just tap "Play now" — the deck is ready to go.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <h3>Draw a card</h3>
+      <p>Tap the deck or press "Draw card." The card is dealt face-down.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <h3>Flip to reveal</h3>
+      <p>Tap the card to flip it and reveal the question. Swipe up for the next one.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <h3>Talk honestly</h3>
+      <p>Answer as much or as little as you like. No wrong answers — just real conversation.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BEE CTA -->
+<section class="bee-cta">
+  <div class="bee-cta-inner">
+    <div class="tagline-chips">
+      <div class="chip">Free</div>
+      <div class="chip">No account needed</div>
+      <div class="chip">EN + PL</div>
+    </div>
+    <h2>Ready to connect?</h2>
+    <p>BeeHonest works on any phone, in any setting. One tap and you're playing.</p>
+    <div class="cta-buttons">
+      <a href="app.html" class="btn-hero">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 9-14 9V3z"/></svg>
+        Play
+      </a>
+      <a href="multi_app.html" class="btn-hero-sec btn-hero-hive">Hive</a>
+    </div>
+    <img src="beehonest_transparent.png" alt="" class="bee-logo" aria-hidden="true">
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <img src="beehonest_transparent.png" alt="BeeHonest" class="footer-logo-img">
+    <span>BeeHonest</span>
+  </div>
+  <div class="footer-links">
+    <a href="app.html">Play</a>
+    <a href="privacy.html">Privacy policy</a>
+  </div>
+  <span class="footer-copy">© 2025 BeeHonest</span>
+</footer>
+
+</body>
+</html>
