@@ -6,7 +6,8 @@ import {
   persistentSingleTabManager,
   doc,
   setDoc,
-  getDoc,
+  getDocFromCache,
+  getDocFromServer,
   updateDoc,
   arrayUnion
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -15,8 +16,6 @@ import {
   signInAnonymously
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
 
-// Replace these values with your own Firebase project config
-// from https://console.firebase.google.com → Project Settings → Your apps
 const firebaseConfig = {
   apiKey: "AIzaSyBpsWZq_-haDubCM_xq9JSgt0_P3hPSFng",
   authDomain: "gen-lang-client-0144819436.firebaseapp.com",
@@ -29,6 +28,7 @@ const firebaseConfig = {
 let db = null;
 let auth = null;
 let _initialized = false;
+let _authReady = null; // Promise that resolves when auth is done
 
 function isConfigured() {
   return firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY";
@@ -53,7 +53,9 @@ export function initFirebase() {
 
     // Anonymous auth so Firestore security rules can identify the user
     auth = getAuth(app);
-    signInAnonymously(auth).catch(() => {});
+    _authReady = signInAnonymously(auth)
+      .then(() => console.log('[moments] Auth ready'))
+      .catch(e => console.warn('[moments] Auth failed:', e.message));
 
     _initialized = true;
   } catch (e) {
@@ -67,10 +69,16 @@ export function isFirebaseReady() {
   return _initialized && db !== null;
 }
 
+// Wait for auth before making Firestore calls that need it
+async function ensureAuth() {
+  if (_authReady) await _authReady;
+}
+
 // --- Step 2: Create a new gift jar ---
 
 export async function createGiftJar(codeId, creatorName, recipientName, recipientType, messages) {
   if (!isFirebaseReady()) return false;
+  await ensureAuth();
   try {
     const giftRef = doc(db, "gifts", codeId);
     await setDoc(giftRef, {
@@ -81,6 +89,7 @@ export async function createGiftJar(codeId, creatorName, recipientName, recipien
       created_at: new Date(),
       messages: messages || []
     });
+    console.log(`[moments] Jar created: ${codeId}`);
     return true;
   } catch (e) {
     console.warn('[moments] Failed to create gift jar:', e.message);
@@ -92,6 +101,7 @@ export async function createGiftJar(codeId, creatorName, recipientName, recipien
 
 export async function addMessage(codeId, authorName, content) {
   if (!isFirebaseReady()) return null;
+  await ensureAuth();
   try {
     const giftRef = doc(db, "gifts", codeId.toUpperCase());
     const uniqueMessageId = crypto.randomUUID();
@@ -107,6 +117,7 @@ export async function addMessage(codeId, authorName, content) {
       messages: arrayUnion(newMessage)
     });
 
+    console.log('[moments] Message added:', uniqueMessageId);
     return uniqueMessageId;
   } catch (e) {
     console.warn('[moments] Failed to add message:', e.message);
@@ -118,30 +129,37 @@ export async function addMessage(codeId, authorName, content) {
 
 export async function fetchGiftJar(codeId) {
   if (!isFirebaseReady()) return null;
+  await ensureAuth();
 
-  const giftRef = doc(db, "gifts", codeId.toUpperCase());
+  const upperCode = codeId.toUpperCase();
+  const giftRef = doc(db, "gifts", upperCode);
 
   try {
     // 1. Try the local IndexedDB cache first (zero cost, instant)
-    const cachedSnap = await getDoc(giftRef, { source: 'cache' });
+    const cachedSnap = await getDocFromCache(giftRef);
 
     if (cachedSnap.exists()) {
+      console.log(`[moments] Jar ${upperCode} loaded from cache`);
       // Background sync: quietly check server for updates
-      getDoc(giftRef, { source: 'server' }).catch(() => {});
+      getDocFromServer(giftRef).catch(() => {});
       return cachedSnap.data();
-    } else {
-      throw new Error("Not in cache");
     }
   } catch (_cacheErr) {
-    // 2. Fallback: fetch from server (costs 1 read)
-    try {
-      const serverSnap = await getDoc(giftRef, { source: 'server' });
-      if (serverSnap.exists()) {
-        return serverSnap.data();
-      }
-    } catch (serverErr) {
-      console.warn(`[moments] Failed to fetch jar ${codeId}. User might be offline.`, serverErr.message);
+    // Not in cache — expected on first load
+  }
+
+  // 2. Fallback: fetch from server (costs 1 read)
+  try {
+    console.log(`[moments] Jar ${upperCode} not cached, fetching from server...`);
+    const serverSnap = await getDocFromServer(giftRef);
+    if (serverSnap.exists()) {
+      console.log(`[moments] Jar ${upperCode} found on server`);
+      return serverSnap.data();
+    } else {
+      console.log(`[moments] Jar ${upperCode} does not exist on server`);
     }
+  } catch (serverErr) {
+    console.warn(`[moments] Failed to fetch jar ${upperCode}:`, serverErr.message);
   }
 
   return null;
