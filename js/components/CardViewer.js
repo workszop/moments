@@ -1,6 +1,12 @@
 import { store } from '../store.js';
 import { router } from '../router.js';
 
+function formatCountdown(ms) {
+  const totalSec = Math.ceil(ms / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
 
 export function CardViewer(container) {
   const messages = store.getShuffledFeed();
@@ -26,6 +32,7 @@ export function CardViewer(container) {
   let currentIndex = 0;
   let isFlipped = false;
   let tsy = 0, tsx = 0;
+  let countdownInterval = null;
 
   const view = document.createElement('div');
   view.className = 'view fade-in';
@@ -36,7 +43,7 @@ export function CardViewer(container) {
         <div class="card-inner" id="card-inner">
           <div class="card-face card-front">
             <p class="card-front-hint">a moment</p>
-            <p class="card-front-sub">tap to reveal</p>
+            <p class="card-front-sub" id="card-front-sub">tap to reveal</p>
           </div>
           <div class="card-face card-back">
             <div class="print-area" id="card-print-area">
@@ -67,9 +74,38 @@ export function CardViewer(container) {
   const cardInner = view.querySelector('#card-inner');
   const cardText = view.querySelector('#card-text');
   const cardAuthor = view.querySelector('#card-author');
+  const cardFrontSub = view.querySelector('#card-front-sub');
   const counter = view.querySelector('#card-counter');
   const nextBtn = view.querySelector('#next-card-btn');
   const swipeHint = view.querySelector('#swipe-hint');
+
+  function updateFlipStatus() {
+    const remaining = store.flipsRemaining();
+    if (remaining > 0) {
+      cardFrontSub.textContent = `tap to reveal \u00B7 ${remaining} left`;
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+      }
+    } else {
+      startCountdown();
+    }
+  }
+
+  function startCountdown() {
+    function tick() {
+      const ms = store.getTimeUntilNextFlip();
+      if (ms <= 0) {
+        cardFrontSub.textContent = `tap to reveal \u00B7 ${store.flipsRemaining()} left`;
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+        return;
+      }
+      cardFrontSub.textContent = `next cards in ${formatCountdown(ms)}`;
+    }
+    tick();
+    countdownInterval = setInterval(tick, 1000);
+  }
 
   function renderCard() {
     const msg = messages[currentIndex];
@@ -84,12 +120,18 @@ export function CardViewer(container) {
     counter.textContent = `${currentIndex + 1}/${messages.length}`;
 
     swipeHint.classList.remove('visible');
+    updateFlipStatus();
   }
 
   function flipCard() {
     if (isFlipped) return;
+    if (!store.canFlip()) {
+      window.showToast('Wait for the timer to flip more cards');
+      return;
+    }
     isFlipped = true;
     cardInner.classList.add('flipped');
+    store.recordFlip();
     store.markSeen(messages[currentIndex].message_id);
     if (navigator.vibrate) navigator.vibrate(10);
     swipeHint.classList.add('visible');
@@ -97,7 +139,6 @@ export function CardViewer(container) {
 
   function nextCard() {
     currentIndex = (currentIndex + 1) % messages.length;
-    // Re-trigger card-in animation
     cardWrap.classList.remove('card-in');
     void cardWrap.offsetWidth;
     cardWrap.classList.add('card-in');
@@ -117,7 +158,6 @@ export function CardViewer(container) {
     if (messages.length > 1) nextCard();
   });
 
-  // Touch swipe (up for next)
   const area = view;
   area.addEventListener('touchstart', (e) => {
     tsy = e.touches[0].clientY;

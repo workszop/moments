@@ -1,6 +1,8 @@
 import { DEMO_ACCESS_CODES, DEMO_MESSAGES } from './data.js';
 
 const STORAGE_KEY = 'moments_store';
+const FLIPS_PER_WINDOW = 3;
+const FLIP_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 
 function loadState() {
   try {
@@ -17,7 +19,10 @@ function createDefaultState() {
     privateEntries: [],
     createdGifts: [],
     seenToday: [],
-    lastSeenDate: null
+    lastSeenDate: null,
+    flipCount: 0,
+    flipWindowStart: null,
+    privateVaultActive: true
   };
 }
 
@@ -25,6 +30,9 @@ class Store {
   constructor() {
     this._listeners = [];
     this._state = loadState() || createDefaultState();
+    if (this._state.flipCount === undefined) this._state.flipCount = 0;
+    if (this._state.flipWindowStart === undefined) this._state.flipWindowStart = null;
+    if (this._state.privateVaultActive === undefined) this._state.privateVaultActive = true;
     this._seedDemoIfNeeded();
   }
 
@@ -61,6 +69,10 @@ class Store {
 
   // --- Codes ---
 
+  getAllCodes() {
+    return this._state.accessCodes;
+  }
+
   getUnlockedCodes() {
     return this._state.accessCodes.filter(c => c.is_active);
   }
@@ -79,6 +91,14 @@ class Store {
       return existing;
     }
     return null;
+  }
+
+  toggleCode(codeId) {
+    const code = this.findCode(codeId);
+    if (code) {
+      code.is_active = !code.is_active;
+      this._notify();
+    }
   }
 
   hasAnyCodes() {
@@ -100,7 +120,8 @@ class Store {
     const codeMessages = this._state.messages.filter(
       m => activeCodes.has(m.code_id.toUpperCase())
     );
-    return [...codeMessages, ...this._state.privateEntries];
+    const private_ = this._state.privateVaultActive ? this._state.privateEntries : [];
+    return [...codeMessages, ...private_];
   }
 
   getShuffledFeed() {
@@ -114,7 +135,6 @@ class Store {
     const unseen = all.filter(m => !this._state.seenToday.includes(m.message_id));
     const pool = unseen.length > 0 ? unseen : all;
 
-    // Fisher-Yates shuffle
     const shuffled = [...pool];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -130,7 +150,53 @@ class Store {
     }
   }
 
+  // --- Flip Limiting ---
+
+  _resetFlipWindowIfNeeded() {
+    if (!this._state.flipWindowStart) return;
+    const elapsed = Date.now() - this._state.flipWindowStart;
+    if (elapsed >= FLIP_WINDOW_MS) {
+      this._state.flipCount = 0;
+      this._state.flipWindowStart = null;
+      this._persist();
+    }
+  }
+
+  canFlip() {
+    this._resetFlipWindowIfNeeded();
+    return this._state.flipCount < FLIPS_PER_WINDOW;
+  }
+
+  flipsRemaining() {
+    this._resetFlipWindowIfNeeded();
+    return Math.max(0, FLIPS_PER_WINDOW - this._state.flipCount);
+  }
+
+  recordFlip() {
+    this._resetFlipWindowIfNeeded();
+    if (!this._state.flipWindowStart) {
+      this._state.flipWindowStart = Date.now();
+    }
+    this._state.flipCount++;
+    this._persist();
+  }
+
+  getTimeUntilNextFlip() {
+    if (!this._state.flipWindowStart) return 0;
+    const elapsed = Date.now() - this._state.flipWindowStart;
+    return Math.max(0, FLIP_WINDOW_MS - elapsed);
+  }
+
   // --- Private Vault ---
+
+  isPrivateVaultActive() {
+    return this._state.privateVaultActive !== false;
+  }
+
+  togglePrivateVault() {
+    this._state.privateVaultActive = !this.isPrivateVaultActive();
+    this._notify();
+  }
 
   addPrivateEntry(content) {
     const entry = {
