@@ -2,6 +2,9 @@ import { DEMO_ACCESS_CODES, DEMO_MESSAGES } from './data.js';
 import { createGiftJar, fetchGiftJar, addMessage } from './firebase.js';
 
 const STORAGE_KEY = 'moments_store';
+
+// Demo codes are local-only — never read from or written to Firebase
+const LOCAL_ONLY_CODES = new Set(DEMO_ACCESS_CODES.map(c => c.code_id.toUpperCase()));
 const FLIPS_PER_WINDOW = 3;
 const FLIP_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 
@@ -216,12 +219,20 @@ class Store {
   }
 
   // --- Cloud Sync ---
+  // Demo codes (ART-101 etc.) are local-only and never touch Firebase.
+
+  _isLocalOnly(codeId) {
+    return LOCAL_ONLY_CODES.has(codeId.toUpperCase());
+  }
 
   async saveGift(codeId, creatorName, recipientName, recipientType, messages) {
+    if (this._isLocalOnly(codeId)) return false;
     return await createGiftJar(codeId, creatorName, recipientName, recipientType, messages);
   }
 
   async fetchAndUnlockCode(codeId) {
+    if (this._isLocalOnly(codeId)) return null;
+
     // Cache-first read: tries IndexedDB cache, then server fallback
     const data = await fetchGiftJar(codeId);
     if (!data) return null;
@@ -263,8 +274,10 @@ class Store {
     this._persist();
     this._notify();
 
-    // Push to cloud via arrayUnion
-    await addMessage(codeId, message.author, message.content);
+    // Push to cloud via arrayUnion (skip for local-only demo codes)
+    if (!this._isLocalOnly(codeId)) {
+      await addMessage(codeId, message.author, message.content);
+    }
   }
 }
 
