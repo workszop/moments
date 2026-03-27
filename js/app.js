@@ -1,4 +1,5 @@
 import { router } from './router.js';
+import { store } from './store.js';
 import { renderHeader } from './components/Header.js';
 import { WelcomeScreen } from './components/WelcomeScreen.js';
 import { CodeEntry } from './components/CodeEntry.js';
@@ -25,7 +26,10 @@ document.addEventListener('DOMContentLoaded', () => {
   router
     .on('welcome', (el) => WelcomeScreen(el))
     .on('codes', (el) => CodeEntry(el))
-    .on('card', (el) => CardViewer(el))
+    .on('card', (el) => {
+      if (!store.hasAnyCodes()) { router.navigate('codes'); return; }
+      CardViewer(el);
+    })
     .on('vault', (el) => PrivateVault(el))
     .on('my-codes', (el) => MyCodesManager(el))
     .on('create', (el) => GiftCreator(el))
