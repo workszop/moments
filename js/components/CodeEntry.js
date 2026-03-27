@@ -50,7 +50,7 @@ export function CodeEntry(container) {
   const detailEl = div.querySelector('#code-success-detail');
   const unlockBtn = div.querySelector('#code-unlock-btn');
 
-  function tryUnlock() {
+  async function tryUnlock() {
     const value = input.value.trim().toUpperCase();
     errorEl.textContent = '';
     successEl.style.display = 'none';
@@ -62,8 +62,28 @@ export function CodeEntry(container) {
       return;
     }
 
-    const code = store.findCode(value);
+    // Check locally first
+    let code = store.findCode(value);
+
+    // If not found locally, try fetching from cloud
     if (!code) {
+      unlockBtn.disabled = true;
+      unlockBtn.textContent = 'Looking up code...';
+      code = await store.fetchAndUnlockCode(value);
+      unlockBtn.disabled = false;
+      unlockBtn.textContent = 'Unlock moments';
+
+      if (code) {
+        const msgCount = store.getMessagesForCode(value).length;
+        detailEl.textContent = `${msgCount} moment${msgCount !== 1 ? 's' : ''} from ${code.creator_name}`;
+        successEl.style.display = 'block';
+        unlockBtn.style.display = 'none';
+        input.disabled = true;
+        window.showToast('Code unlocked!');
+        setTimeout(() => router.navigate('card'), 1800);
+        return;
+      }
+
       errorEl.textContent = 'Code not found. Check and try again.';
       input.classList.add('shake');
       setTimeout(() => input.classList.remove('shake'), 400);

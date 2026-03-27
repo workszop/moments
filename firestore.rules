@@ -1,0 +1,16 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /gifts/{codeId} {
+      // Anyone can read a gift (needed to unlock by code)
+      allow read: if true;
+
+      // Authenticated users can create gifts
+      allow create: if request.auth != null;
+
+      // Allow updating only the messages array (for contributions)
+      allow update: if request.auth != null
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['messages']);
+    }
+  }
+}

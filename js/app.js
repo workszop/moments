@@ -1,5 +1,6 @@
 import { router } from './router.js';
 import { store } from './store.js';
+import { initFirebase } from './firebase.js';
 import { renderHeader } from './components/Header.js';
 import { WelcomeScreen } from './components/WelcomeScreen.js';
 import { CodeEntry } from './components/CodeEntry.js';
@@ -18,6 +19,8 @@ window.showToast = function(msg) {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  initFirebase();
+
   const headerEl = document.getElementById('header');
   const appEl = document.getElementById('app');
 

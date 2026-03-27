@@ -73,21 +73,24 @@ export function GiftCreator(container) {
     const code = generateCode();
     giftState.generatedCode = code;
 
+    const creatorName = giftState.creatorName || 'someone special';
+    const recipientName = giftState.recipientName || giftState.recipientType || 'someone';
+
     store.state.accessCodes.push({
       code_id: code,
-      creator_name: giftState.creatorName || 'someone special',
-      recipient_name: giftState.recipientName || giftState.recipientType || 'someone',
+      creator_name: creatorName,
+      recipient_name: recipientName,
       is_active: true
     });
 
-    giftState.messages.forEach((msg, i) => {
-      store.state.messages.push({
-        message_id: 'gift_' + Date.now() + '_' + i,
-        code_id: code,
-        author: msg.author || giftState.creatorName || 'anonymous',
-        content: msg.content
-      });
-    });
+    const messages = giftState.messages.map((msg, i) => ({
+      message_id: 'gift_' + Date.now() + '_' + i,
+      code_id: code,
+      author: msg.author || giftState.creatorName || 'anonymous',
+      content: msg.content
+    }));
+
+    messages.forEach(m => store.state.messages.push(m));
 
     store.state.createdGifts.push({
       code,
@@ -99,6 +102,19 @@ export function GiftCreator(container) {
 
     store._persist();
     store._notify();
+
+    // Save to cloud so others can access this gift by code
+    store.saveGift({
+      code_id: code,
+      creator_name: creatorName,
+      recipient_name: recipientName,
+      recipient_type: giftState.recipientType || '',
+      messages: messages.map(m => ({
+        message_id: m.message_id,
+        author: m.author,
+        content: m.content
+      }))
+    });
   }
 
   render();

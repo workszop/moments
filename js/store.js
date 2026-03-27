@@ -1,4 +1,5 @@
 import { DEMO_ACCESS_CODES, DEMO_MESSAGES } from './data.js';
+import { saveGiftToCloud, fetchGiftFromCloud, addMessageToCloud } from './firebase.js';
 
 const STORAGE_KEY = 'moments_store';
 const FLIPS_PER_WINDOW = 3;
@@ -212,6 +213,62 @@ class Store {
 
   getPrivateEntries() {
     return this._state.privateEntries;
+  }
+
+  // --- Cloud Sync ---
+
+  async saveGift(giftData) {
+    const saved = await saveGiftToCloud(giftData);
+    return saved;
+  }
+
+  async fetchAndUnlockCode(codeId) {
+    const data = await fetchGiftFromCloud(codeId);
+    if (!data) return null;
+
+    const upperCode = codeId.toUpperCase();
+
+    // Add code if not already local
+    if (!this.findCode(upperCode)) {
+      this._state.accessCodes.push({
+        code_id: data.code_id || upperCode,
+        creator_name: data.creator_name || 'someone special',
+        recipient_name: data.recipient_name || 'someone',
+        is_active: true
+      });
+    }
+
+    // Merge messages (avoid duplicates by message_id)
+    const existingIds = new Set(this._state.messages.map(m => m.message_id));
+    const cloudMessages = (data.messages || []).map((msg, i) => ({
+      message_id: msg.message_id || `cloud_${upperCode}_${i}`,
+      code_id: data.code_id || upperCode,
+      author: msg.author || 'anonymous',
+      content: msg.content
+    }));
+
+    cloudMessages.forEach(msg => {
+      if (!existingIds.has(msg.message_id)) {
+        this._state.messages.push(msg);
+      }
+    });
+
+    this._notify();
+    return this.findCode(upperCode);
+  }
+
+  async addContribution(codeId, message) {
+    // Save locally
+    this._state.messages.push(message);
+    this._persist();
+    this._notify();
+
+    // Also push to cloud
+    await addMessageToCloud(codeId, {
+      message_id: message.message_id,
+      author: message.author,
+      content: message.content
+    });
   }
 }
 

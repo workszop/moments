@@ -66,7 +66,7 @@ export function ContributePage(container) {
   const errorEl = div.querySelector('#contrib-error');
   const successEl = div.querySelector('#contrib-success');
 
-  submitBtn.addEventListener('click', () => {
+  submitBtn.addEventListener('click', async () => {
     const codeVal = codeInput.value.trim().toUpperCase();
     const content = contentInput.value.trim();
     errorEl.textContent = '';
@@ -80,17 +80,25 @@ export function ContributePage(container) {
       return;
     }
 
-    const code = store.findCode(codeVal);
+    // Check locally first, then try cloud
+    let code = store.findCode(codeVal);
+    if (!code) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Looking up code...';
+      code = await store.fetchAndUnlockCode(codeVal);
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send moment';
+    }
     if (!code) { errorEl.textContent = 'Code not found. Please check and try again.'; return; }
 
-    store.state.messages.push({
+    const message = {
       message_id: 'contrib_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
       code_id: codeVal,
       author: authorInput.value.trim() || 'anonymous',
       content
-    });
-    store._persist();
-    store._notify();
+    };
+
+    await store.addContribution(codeVal, message);
 
     submitBtn.classList.add('hidden');
     successEl.classList.remove('hidden');
