@@ -69,7 +69,20 @@ export function CodeEntry(container) {
     if (!code) {
       unlockBtn.disabled = true;
       unlockBtn.textContent = 'Looking up code...';
-      code = await store.fetchAndUnlockCode(value);
+      try {
+        code = await store.fetchAndUnlockCode(value);
+      } catch (err) {
+        unlockBtn.disabled = false;
+        unlockBtn.textContent = 'Unlock moments';
+        if (err.message === 'offline') {
+          errorEl.textContent = 'Unable to connect. Please check your internet connection and try again.';
+        } else {
+          errorEl.textContent = 'Something went wrong. Please try again.';
+        }
+        input.classList.add('shake');
+        setTimeout(() => input.classList.remove('shake'), 400);
+        return;
+      }
       unlockBtn.disabled = false;
       unlockBtn.textContent = 'Unlock moments';
 

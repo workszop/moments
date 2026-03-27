@@ -234,6 +234,7 @@ class Store {
     if (this._isLocalOnly(codeId)) return null;
 
     // Cache-first read: tries IndexedDB cache, then server fallback
+    // fetchGiftJar throws Error('offline') if the server is unreachable
     const data = await fetchGiftJar(codeId);
     if (!data) return null;
 

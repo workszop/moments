@@ -160,6 +160,10 @@ export async function fetchGiftJar(codeId) {
     }
   } catch (serverErr) {
     console.warn(`[moments] Failed to fetch jar ${upperCode}:`, serverErr.message);
+    const msg = serverErr.message || '';
+    if (msg.includes('offline') || msg.includes('not-found') || msg.includes('Failed to get document')) {
+      throw new Error('offline');
+    }
   }
 
   return null;
