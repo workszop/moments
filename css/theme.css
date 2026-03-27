@@ -343,16 +343,18 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
   min-height: 0;
 }
 
 /* ── 3D CARD FLIP ── */
 .card-container {
-  width: min(100%, 330px, calc((100dvh - 240px - var(--safe-top) - var(--safe-bottom)) * 3 / 4.2));
+  width: min(100%, 330px);
   aspect-ratio: 3 / 4.2;
   perspective: 1200px;
   cursor: pointer;
   position: relative;
+  max-height: 100%;
 }
 .card-inner {
   width: 100%;
