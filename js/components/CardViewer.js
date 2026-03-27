@@ -14,7 +14,7 @@ export function CardViewer(container) {
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </div>
         <p class="empty-title">No moments yet</p>
-        <p class="empty-sub">Unlock a code or start your journal to see cards here.</p>
+        <p class="empty-sub">Unlock a code or start adding moments to see cards here.</p>
         <button class="btn btn-primary" id="empty-go-codes">Enter a code</button>
       </div>
     `;
