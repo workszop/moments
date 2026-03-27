@@ -1,4 +1,4 @@
-const CACHE_NAME = 'moments-v5';
+const CACHE_NAME = 'moments-v6';
 const ASSETS = [
   './',
   './index.html',
@@ -8,7 +8,6 @@ const ASSETS = [
   './js/data.js',
   './js/router.js',
   './js/components/Header.js',
-  './js/components/Footer.js',
   './js/components/WelcomeScreen.js',
   './js/components/CodeEntry.js',
   './js/components/CardViewer.js',

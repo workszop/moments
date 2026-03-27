@@ -7,7 +7,6 @@
   padding: 0;
 }
 
-/* ── DESIGN TOKENS ── */
 :root {
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -38,7 +37,6 @@ body {
   width: 100%;
 }
 
-/* ── SCROLLBAR HIDE ── */
 * { scrollbar-width: none; }
 *::-webkit-scrollbar { display: none; }
 
@@ -65,7 +63,6 @@ body {
   overscroll-behavior-y: contain;
 }
 
-/* ── STANDALONE ── */
 @media (display-mode: standalone) {
   body { background: #000; }
   .app { background: #fff; }
@@ -158,6 +155,10 @@ body {
   letter-spacing: .15em;
   text-align: center;
 }
+.input-compact {
+  padding: 10px 12px;
+  font-size: 14px;
+}
 
 .textarea {
   width: 100%;
@@ -206,7 +207,7 @@ body {
 .hero-card-title { font-size: 2rem; font-weight: 900; color: #fff; line-height: 1.2; margin-bottom: 8px; }
 .hero-card-sub { font-size: 13px; font-weight: 700; color: #999; }
 
-/* ── CHIPS / TAGS ── */
+/* ── CHIPS ── */
 .chip {
   display: inline-flex;
   align-items: center;
@@ -217,10 +218,6 @@ body {
   padding: 5px 12px;
   font-size: 12px;
   font-weight: 800;
-  color: #000;
-}
-.chip-purple, .chip-yellow, .chip-green, .chip-red, .chip-blue {
-  background: #fff;
   color: #000;
 }
 
@@ -240,15 +237,13 @@ body {
   letter-spacing: .08em;
 }
 
-/* ── FORM PANEL ── */
+/* ── PANELS & BOXES ── */
 .form-panel {
   background: #fff;
   border: 1px solid #000;
   border-radius: 16px;
   padding: 20px;
 }
-
-/* ── INFO BOX ── */
 .info-box {
   background: #fff;
   border: 1px solid #000;
@@ -256,16 +251,12 @@ body {
   padding: 20px;
 }
 .info-box p { font-size: 13px; font-weight: 700; color: #999; line-height: 1.6; }
-
-/* ── HIGHLIGHT BOX ── */
 .highlight-box {
   background: #fff;
   border: 1px solid #000;
   border-radius: 16px;
   padding: 24px;
 }
-
-/* ── SUCCESS BOX ── */
 .success-box {
   background: #fff;
   border: 1px solid #000;
@@ -334,10 +325,9 @@ body {
 }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ── ERROR TEXT ── */
 .error-text { font-size: 12px; font-weight: 800; color: #000; min-height: 18px; }
 
-/* ── CARD AREA (centers card vertically in remaining space) ── */
+/* ── CARD AREA ── */
 .card-area {
   flex: 1;
   display: flex;
@@ -383,21 +373,17 @@ body {
   border: 1px solid #000;
   background: #fff;
 }
-.card-front { background: #fff; }
 .card-front-hint { font-size: 16px; font-weight: 900; color: #000; }
 .card-front-sub { font-size: 12px; color: #999; font-weight: 700; margin-top: 2px; }
 .card-back {
   transform: rotateY(180deg);
-  background: #fff;
   align-items: flex-end;
   justify-content: center;
   text-align: right;
 }
-
 .card-back .print-area { width: 100%; max-width: 280px; text-align: right; }
 .q-text { font-size: 1.15rem; font-weight: 900; text-align: right; line-height: 1.5; color: #000; }
 .q-author { font-size: .85rem; font-weight: 800; color: #999; margin-top: 16px; text-align: right; }
-.q-type { margin-bottom: 16px; text-align: right; }
 
 /* ── SWIPE HINT ── */
 .swipe-hint {
@@ -435,15 +421,6 @@ body {
 .empty-title { font-size: 17px; font-weight: 900; color: #000; }
 .empty-sub { font-size: 13px; color: #999; font-weight: 700; }
 
-/* ── MESSAGE TYPE CHIPS ── */
-.type-story,
-.type-compliment,
-.type-sentence,
-.type-private_thought {
-  background: #fff;
-  color: #000;
-}
-
 /* ── STEP INDICATOR ── */
 .steps-bar {
   display: flex;
@@ -480,15 +457,11 @@ body {
 .mb-16 { margin-bottom: 16px; }
 .mb-20 { margin-bottom: 20px; }
 .mb-24 { margin-bottom: 24px; }
-.mb-32 { margin-bottom: 32px; }
 .mt-8 { margin-top: 8px; }
 .mt-12 { margin-top: 12px; }
 .mt-16 { margin-top: 16px; }
-.mt-24 { margin-top: 24px; }
 .gap-8 { gap: 8px; }
 .gap-10 { gap: 10px; }
-.gap-12 { gap: 12px; }
-.gap-16 { gap: 16px; }
 .flex-col { display: flex; flex-direction: column; }
 .flex-row { display: flex; flex-direction: row; align-items: center; }
 .flex-center { display: flex; align-items: center; justify-content: center; }
@@ -496,11 +469,13 @@ body {
 .flex-wrap { flex-wrap: wrap; }
 .flex-1 { flex: 1; }
 .w-full { width: 100%; }
+.hidden { display: none; }
 
 .title { font-size: 1.3rem; font-weight: 900; color: #000; letter-spacing: -.01em; }
 .subtitle { font-size: 13px; color: #999; font-weight: 700; line-height: 1.5; }
 .label { font-size: 12px; font-weight: 900; color: #999; text-transform: uppercase; letter-spacing: .08em; }
 .hint { font-size: 12px; font-weight: 700; color: #ccc; }
+.muted { color: #999; }
 
 /* ── ANIMATIONS ── */
 @keyframes fadeIn {

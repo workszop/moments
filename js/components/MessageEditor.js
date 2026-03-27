@@ -1,10 +1,4 @@
 export function MessageEditor(container, giftState, { onNext, onBack }) {
-  const typeOptions = [
-    { value: 'sentence', label: 'Message' },
-    { value: 'compliment', label: 'Compliment' },
-    { value: 'story', label: 'Story / Memory' }
-  ];
-
   function render() {
     container.innerHTML = `
       <div class="text-center mb-20">
@@ -23,15 +17,12 @@ export function MessageEditor(container, giftState, { onNext, onBack }) {
           rows="3"
         ></textarea>
         <div class="flex-row gap-8 flex-wrap">
-          <select class="input flex-1" id="msg-type" style="min-width:120px;padding:10px 12px;font-size:14px">
-            ${typeOptions.map(o => `<option value="${o.value}">${o.label}</option>`).join('')}
-          </select>
           <input
             type="text"
-            class="input flex-1"
+            class="input input-compact flex-1"
             id="msg-author"
             placeholder="Author"
-            style="min-width:100px;padding:10px 12px;font-size:14px"
+            style="min-width:100px"
           >
           <button class="btn btn-primary btn-small" id="msg-add-btn">+ Add</button>
         </div>
@@ -61,9 +52,7 @@ export function MessageEditor(container, giftState, { onNext, onBack }) {
         card.innerHTML = `
           <div style="flex:1">
             <p style="font-size:13px;font-weight:700;line-height:1.5">"${msg.content}"</p>
-            <p style="font-size:11px;font-weight:700;color:#aaa;margin-top:4px">
-              ${msg.author ? msg.author + ' &middot; ' : ''}${msg.type}
-            </p>
+            ${msg.author ? `<p style="font-size:11px;font-weight:700;color:#aaa;margin-top:4px">${msg.author}</p>` : ''}
           </div>
           <button class="header-btn msg-delete-btn" data-index="${i}" style="font-size:11px;padding:4px 8px">&times;</button>
         `;
@@ -80,7 +69,6 @@ export function MessageEditor(container, giftState, { onNext, onBack }) {
     }
 
     const contentEl = container.querySelector('#msg-content');
-    const typeEl = container.querySelector('#msg-type');
     const authorEl = container.querySelector('#msg-author');
 
     container.querySelector('#msg-add-btn').addEventListener('click', () => {
@@ -90,7 +78,7 @@ export function MessageEditor(container, giftState, { onNext, onBack }) {
         setTimeout(() => contentEl.classList.remove('shake'), 400);
         return;
       }
-      giftState.messages.push({ content, type: typeEl.value, author: authorEl.value.trim() });
+      giftState.messages.push({ content, author: authorEl.value.trim() });
       render();
     });
 

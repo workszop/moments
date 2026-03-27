@@ -137,8 +137,7 @@ class Store {
       message_id: 'priv_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
       code_id: 'PRIVATE',
       author: 'you',
-      content,
-      type: 'private_thought'
+      content
     };
     this._state.privateEntries.push(entry);
     this._notify();

@@ -32,7 +32,7 @@ export function MyCodesManager(container) {
         <div class="flex-col gap-10 w-full" id="codes-list"></div>
       ` : `
         <p class="hint text-center">
-          No codes yet. Enter one above or try <strong style="color:var(--fg)">ART-101</strong>
+          No codes yet. Enter one above or try <strong style="color:#000">ART-101</strong>
         </p>
       `}
 
@@ -55,7 +55,7 @@ export function MyCodesManager(container) {
                 from ${code.creator_name} &middot; ${msgCount} moment${msgCount !== 1 ? 's' : ''}
               </p>
             </div>
-            <span class="chip chip-green">active</span>
+            <span class="chip">active</span>
           </div>
         `;
         list.appendChild(card);

@@ -85,8 +85,7 @@ export function GiftCreator(container) {
         message_id: 'gift_' + Date.now() + '_' + i,
         code_id: code,
         author: msg.author || giftState.creatorName || 'anonymous',
-        content: msg.content,
-        type: msg.type || 'sentence'
+        content: msg.content
       });
     });
 

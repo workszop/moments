@@ -1,15 +1,9 @@
 import { store } from '../store.js';
 import { router } from '../router.js';
 
-export function ContributePage(container, params) {
+export function ContributePage(container) {
   const div = document.createElement('div');
   div.className = 'view view-scroll fade-in';
-
-  const typeOptions = [
-    { value: 'sentence', label: 'Message' },
-    { value: 'compliment', label: 'Compliment' },
-    { value: 'story', label: 'Story / Memory' }
-  ];
 
   div.innerHTML = `
     <div class="text-center mb-20">
@@ -36,16 +30,13 @@ export function ContributePage(container, params) {
         placeholder="Write a message, compliment, memory, or inside joke..."
         rows="4"
       ></textarea>
-      <div class="flex-row gap-8 flex-wrap">
-        <select class="input flex-1" id="contrib-type" style="min-width:120px;padding:10px 12px;font-size:14px">
-          ${typeOptions.map(o => `<option value="${o.value}">${o.label}</option>`).join('')}
-        </select>
+      <div class="flex-row gap-8">
         <input
           type="text"
-          class="input flex-1"
+          class="input input-compact flex-1"
           id="contrib-author"
           placeholder="Your name"
-          style="min-width:100px;padding:10px 12px;font-size:14px"
+          style="min-width:100px"
         >
       </div>
     </div>
@@ -54,7 +45,7 @@ export function ContributePage(container, params) {
 
     <div class="error-text text-center mb-8" id="contrib-error"></div>
 
-    <div id="contrib-success" style="display:none" class="pop-in w-full mb-16">
+    <div id="contrib-success" class="hidden pop-in w-full mb-16">
       <div class="success-box">
         <div class="success-box-title">Moment sent!</div>
         <div class="success-box-sub">Your message has been added. They're going to love it.</div>
@@ -70,7 +61,6 @@ export function ContributePage(container, params) {
 
   const codeInput = div.querySelector('#contrib-code');
   const contentInput = div.querySelector('#contrib-content');
-  const typeSelect = div.querySelector('#contrib-type');
   const authorInput = div.querySelector('#contrib-author');
   const submitBtn = div.querySelector('#contrib-submit-btn');
   const errorEl = div.querySelector('#contrib-error');
@@ -80,7 +70,7 @@ export function ContributePage(container, params) {
     const codeVal = codeInput.value.trim().toUpperCase();
     const content = contentInput.value.trim();
     errorEl.textContent = '';
-    successEl.style.display = 'none';
+    successEl.classList.add('hidden');
 
     if (!codeVal) { errorEl.textContent = 'Please enter the gift code.'; return; }
     if (!content) {
@@ -97,21 +87,20 @@ export function ContributePage(container, params) {
       message_id: 'contrib_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
       code_id: codeVal,
       author: authorInput.value.trim() || 'anonymous',
-      content,
-      type: typeSelect.value
+      content
     });
     store._persist();
     store._notify();
 
-    submitBtn.style.display = 'none';
-    successEl.style.display = 'block';
+    submitBtn.classList.add('hidden');
+    successEl.classList.remove('hidden');
     contentInput.value = '';
     contentInput.disabled = true;
     codeInput.disabled = true;
     window.showToast('Moment sent!');
 
     setTimeout(() => {
-      submitBtn.style.display = '';
+      submitBtn.classList.remove('hidden');
       submitBtn.textContent = 'Send another moment';
       contentInput.disabled = false;
       contentInput.focus();

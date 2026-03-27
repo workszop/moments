@@ -33,7 +33,7 @@ export function WelcomeScreen(container) {
 
     ${!hasCodes ? `
       <p class="hint mt-16 text-center">
-        Try the demo code: <strong style="color:var(--fg)">ART-101</strong>
+        Try the demo code: <strong style="color:#000">ART-101</strong>
       </p>
     ` : ''}
   `;
