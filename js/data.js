@@ -3,7 +3,7 @@ export const DEMO_ACCESS_CODES = [
     code_id: 'ART-101',
     creator_name: 'the universe',
     recipient_name: 'artist',
-    is_active: true
+    is_active: false
   }
 ];
 
