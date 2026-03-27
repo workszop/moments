@@ -32,7 +32,7 @@ export function MyCodesManager(container) {
         <div class="flex-col gap-10 w-full" id="codes-list"></div>
       ` : `
         <p class="hint text-center">
-          No codes yet. Enter one above or try <strong style="color:var(--purple)">DEMO-LOVE-2026</strong>
+          No codes yet. Enter one above or try <strong style="color:var(--fg)">DEMO-LOVE-2026</strong>
         </p>
       `}
 

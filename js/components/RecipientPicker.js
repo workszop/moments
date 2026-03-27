@@ -1,9 +1,9 @@
 export function RecipientPicker(container, giftState, onNext) {
   const types = [
-    { id: 'partner', label: 'Partner', color: 'var(--red)' },
-    { id: 'friend', label: 'Friend', color: 'var(--blue)' },
-    { id: 'kid', label: 'Kid', color: 'var(--yellow)' },
-    { id: 'colleague', label: 'Colleague', color: 'var(--green)' }
+    { id: 'partner', label: 'Partner', color: 'var(--fg)' },
+    { id: 'friend', label: 'Friend', color: 'var(--fg)' },
+    { id: 'kid', label: 'Kid', color: 'var(--fg)' },
+    { id: 'colleague', label: 'Colleague', color: 'var(--fg)' }
   ];
 
   container.innerHTML = `

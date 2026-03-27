@@ -44,7 +44,7 @@ export function PrivateVault(container) {
         const card = document.createElement('div');
         card.className = 'card-flat';
         card.innerHTML = `
-          <p style="font-size:14px;font-weight:700;line-height:1.6;color:var(--dark)">
+          <p style="font-size:14px;font-weight:700;line-height:1.6;color:var(--fg)">
             "${entry.content}"
           </p>
           <p style="font-size:11px;font-weight:700;color:#bbb;margin-top:8px">&mdash; you</p>
