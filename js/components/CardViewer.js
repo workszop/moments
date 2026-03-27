@@ -36,26 +36,28 @@ export function CardViewer(container) {
   let tsy = 0, tsx = 0;
 
   const view = document.createElement('div');
-  view.className = 'view view-center fade-in';
+  view.className = 'view fade-in';
 
   view.innerHTML = `
-    <div class="card-container card-in" id="card-wrap">
-      <div class="card-inner" id="card-inner">
-        <div class="card-face card-front">
-          <p class="card-front-hint">your moment</p>
-          <p class="card-front-sub">tap to reveal</p>
-        </div>
-        <div class="card-face card-back">
-          <div class="print-area" id="card-print-area">
-            <div class="q-type" id="card-type-chip"></div>
-            <p class="q-text" id="card-text"></p>
-            <p class="q-author" id="card-author"></p>
+    <div class="card-area" id="card-area">
+      <div class="card-container card-in" id="card-wrap">
+        <div class="card-inner" id="card-inner">
+          <div class="card-face card-front">
+            <p class="card-front-hint">your moment</p>
+            <p class="card-front-sub">tap to reveal</p>
+          </div>
+          <div class="card-face card-back">
+            <div class="print-area" id="card-print-area">
+              <div class="q-type" id="card-type-chip"></div>
+              <p class="q-text" id="card-text"></p>
+              <p class="q-author" id="card-author"></p>
+            </div>
           </div>
         </div>
-      </div>
-      <div class="swipe-hint" id="swipe-hint">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l7-7 7 7"/></svg>
-        <span>Swipe up for next</span>
+        <div class="swipe-hint" id="swipe-hint">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l7-7 7 7"/></svg>
+          <span>Swipe up for next</span>
+        </div>
       </div>
     </div>
 

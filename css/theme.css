@@ -337,6 +337,15 @@ body {
 /* ── ERROR TEXT ── */
 .error-text { font-size: 12px; font-weight: 800; color: #000; min-height: 18px; }
 
+/* ── CARD AREA (centers card vertically in remaining space) ── */
+.card-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
 /* ── 3D CARD FLIP ── */
 .card-container {
   width: min(100%, 330px, calc((100dvh - 240px - var(--safe-top) - var(--safe-bottom)) * 3 / 4.2));
