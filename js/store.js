@@ -14,7 +14,6 @@ function createDefaultState() {
   return {
     accessCodes: [],
     messages: [],
-    favorites: [],
     privateEntries: [],
     createdGifts: [],
     seenToday: [],
