@@ -16,18 +16,11 @@ export function renderHeader(headerEl) {
           ? `<button class="header-btn header-btn-active" id="hdr-card">Open card</button>`
           : ''
         }
-        ${hasCodes && current !== 'favorites'
-          ? `<button class="header-btn" id="hdr-favs">Favorites</button>`
-          : ''
-        }
       </div>
     `;
 
     const cardBtn = headerEl.querySelector('#hdr-card');
     if (cardBtn) cardBtn.addEventListener('click', () => router.navigate('card'));
-
-    const favsBtn = headerEl.querySelector('#hdr-favs');
-    if (favsBtn) favsBtn.addEventListener('click', () => router.navigate('favorites'));
   }
 
   render();

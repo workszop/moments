@@ -131,27 +131,6 @@ class Store {
     }
   }
 
-  // --- Favorites ---
-
-  toggleFavorite(messageId) {
-    const idx = this._state.favorites.indexOf(messageId);
-    if (idx === -1) {
-      this._state.favorites.push(messageId);
-    } else {
-      this._state.favorites.splice(idx, 1);
-    }
-    this._notify();
-  }
-
-  isFavorite(messageId) {
-    return this._state.favorites.includes(messageId);
-  }
-
-  getFavoriteMessages() {
-    const all = [...this._state.messages, ...this._state.privateEntries];
-    return all.filter(m => this._state.favorites.includes(m.message_id));
-  }
-
   // --- Private Vault ---
 
   addPrivateEntry(content) {
