@@ -1,5 +1,5 @@
 import { DEMO_ACCESS_CODES, DEMO_MESSAGES } from './data.js';
-import { saveGiftToCloud, fetchGiftFromCloud, addMessageToCloud } from './firebase.js';
+import { createGiftJar, fetchGiftJar, addMessage } from './firebase.js';
 
 const STORAGE_KEY = 'moments_store';
 const FLIPS_PER_WINDOW = 3;
@@ -217,13 +217,13 @@ class Store {
 
   // --- Cloud Sync ---
 
-  async saveGift(giftData) {
-    const saved = await saveGiftToCloud(giftData);
-    return saved;
+  async saveGift(codeId, creatorName, recipientName, recipientType, messages) {
+    return await createGiftJar(codeId, creatorName, recipientName, recipientType, messages);
   }
 
   async fetchAndUnlockCode(codeId) {
-    const data = await fetchGiftFromCloud(codeId);
+    // Cache-first read: tries IndexedDB cache, then server fallback
+    const data = await fetchGiftJar(codeId);
     if (!data) return null;
 
     const upperCode = codeId.toUpperCase();
@@ -263,12 +263,8 @@ class Store {
     this._persist();
     this._notify();
 
-    // Also push to cloud
-    await addMessageToCloud(codeId, {
-      message_id: message.message_id,
-      author: message.author,
-      content: message.content
-    });
+    // Push to cloud via arrayUnion
+    await addMessage(codeId, message.author, message.content);
   }
 }
 

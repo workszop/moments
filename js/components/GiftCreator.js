@@ -83,11 +83,12 @@ export function GiftCreator(container) {
       is_active: true
     });
 
-    const messages = giftState.messages.map((msg, i) => ({
-      message_id: 'gift_' + Date.now() + '_' + i,
+    const messages = giftState.messages.map(msg => ({
+      message_id: crypto.randomUUID(),
       code_id: code,
       author: msg.author || giftState.creatorName || 'anonymous',
-      content: msg.content
+      content: msg.content,
+      added_at: new Date()
     }));
 
     messages.forEach(m => store.state.messages.push(m));
@@ -103,18 +104,19 @@ export function GiftCreator(container) {
     store._persist();
     store._notify();
 
-    // Save to cloud so others can access this gift by code
-    store.saveGift({
-      code_id: code,
-      creator_name: creatorName,
-      recipient_name: recipientName,
-      recipient_type: giftState.recipientType || '',
-      messages: messages.map(m => ({
+    // Save to cloud via setDoc so others can access this gift by code
+    store.saveGift(
+      code,
+      creatorName,
+      recipientName,
+      giftState.recipientType || '',
+      messages.map(m => ({
         message_id: m.message_id,
         author: m.author,
-        content: m.content
+        content: m.content,
+        added_at: m.added_at
       }))
-    });
+    );
   }
 
   render();

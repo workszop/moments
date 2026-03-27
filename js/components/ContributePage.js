@@ -92,7 +92,7 @@ export function ContributePage(container) {
     if (!code) { errorEl.textContent = 'Code not found. Please check and try again.'; return; }
 
     const message = {
-      message_id: 'contrib_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+      message_id: crypto.randomUUID(),
       code_id: codeVal,
       author: authorInput.value.trim() || 'anonymous',
       content
