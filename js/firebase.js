@@ -1,5 +1,5 @@
 // Firebase Modular SDK via CDN — ES Module imports
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import {
   initializeFirestore,
   persistentLocalCache,
@@ -10,11 +10,11 @@ import {
   getDocFromServer,
   updateDoc,
   arrayUnion
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 import {
   getAuth,
   signInAnonymously
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBpsWZq_-haDubCM_xq9JSgt0_P3hPSFng",
