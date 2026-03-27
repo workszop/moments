@@ -18,12 +18,12 @@ import {
 // Replace these values with your own Firebase project config
 // from https://console.firebase.google.com → Project Settings → Your apps
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.firebasestorage.app",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyBpsWZq_-haDubCM_xq9JSgt0_P3hPSFng",
+  authDomain: "gen-lang-client-0144819436.firebaseapp.com",
+  projectId: "gen-lang-client-0144819436",
+  storageBucket: "gen-lang-client-0144819436.firebasestorage.app",
+  messagingSenderId: "67665396784",
+  appId: "1:67665396784:web:1c9dd961870668964319f5"
 };
 
 let db = null;
@@ -31,7 +31,7 @@ let auth = null;
 let _initialized = false;
 
 function isConfigured() {
-  return firebaseConfig.apiKey !== "YOUR_API_KEY";
+  return firebaseConfig.apiKey && firebaseConfig.apiKey !== "YOUR_API_KEY";
 }
 
 // --- Initialize ---
