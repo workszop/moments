@@ -1,4 +1,4 @@
-const CACHE_NAME = 'moments-v10';
+const CACHE_NAME = 'moments-v11';
 const ASSETS = [
   './',
   './index.html',
@@ -39,8 +39,13 @@ self.addEventListener('activate', (e) => {
   );
 });
 
-// Network-first: always try fresh files, fall back to cache offline
+// Network-first for app assets only; pass through all external requests
 self.addEventListener('fetch', (e) => {
+  const url = new URL(e.request.url);
+
+  // Only cache same-origin app assets — let Firebase SDK/API requests pass through
+  if (url.origin !== self.location.origin) return;
+
   e.respondWith(
     fetch(e.request)
       .then(response => {
