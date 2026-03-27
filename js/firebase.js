@@ -49,7 +49,7 @@ export function initFirebase() {
     // Firestore with IndexedDB persistence for offline / cache-first reads
     db = initializeFirestore(app, {
       localCache: persistentLocalCache({ tabManager: persistentSingleTabManager() })
-    });
+    }, "ai-studio-5840958f-eaaf-44d6-9794-47aec37691ec");
 
     // Anonymous auth so Firestore security rules can identify the user
     auth = getAuth(app);
