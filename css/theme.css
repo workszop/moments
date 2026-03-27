@@ -267,32 +267,36 @@ body{
   backface-visibility:hidden;-webkit-backface-visibility:hidden;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:32px 28px;overflow:hidden;
-  border:3.5px solid var(--dark);
+  border:1.5px solid var(--dark);
 }
-.card-front{background:var(--purple);box-shadow:6px 6px 0 var(--dark)}
+.card-front{background:#fff;box-shadow:6px 6px 0 var(--dark);border-width:1.5px}
 .card-front-icon{
   width:56px;height:56px;display:flex;align-items:center;justify-content:center;
   border-radius:16px;background:rgba(255,255,255,.2);border:3px solid rgba(255,255,255,.3);
   box-shadow:3px 3px 0 rgba(0,0,0,.1);margin-bottom:14px;
 }
-.card-front-hint{font-size:16px;font-weight:800;color:#fff}
-.card-front-sub{font-size:12px;color:rgba(255,255,255,.7);font-weight:700;margin-top:2px}
+.card-front-hint{font-size:16px;font-weight:900;color:var(--dark)}
+.card-front-sub{font-size:12px;color:#aaa;font-weight:700;margin-top:2px}
 .card-back{
   transform:rotateY(180deg);
   box-shadow:-6px 6px 0 var(--dark);
   background:#fff;
+  border-width:1.5px;
+  align-items:flex-end;
+  justify-content:flex-end;
+  text-align:right;
 }
 
-/* Card color themes */
-.ct-story .card-back{background:#EFF6FF}
-.ct-compliment .card-back{background:#FFFBEB}
-.ct-sentence .card-back{background:#F0FFF4}
-.ct-private_thought .card-back{background:#FDF4FF}
+/* Card color themes — all white */
+.ct-story .card-back{background:#fff}
+.ct-compliment .card-back{background:#fff}
+.ct-sentence .card-back{background:#fff}
+.ct-private_thought .card-back{background:#fff}
 
-.card-back .print-area{width:100%;max-width:260px}
-.q-text{font-size:1.1rem;font-weight:800;text-align:center;line-height:1.6;color:var(--dark)}
-.q-author{font-size:.85rem;font-weight:800;color:#aaa;margin-top:16px;text-align:center}
-.q-type{margin-bottom:16px}
+.card-back .print-area{width:100%;max-width:280px;text-align:right}
+.q-text{font-size:1.15rem;font-weight:900;text-align:right;line-height:1.5;color:var(--dark)}
+.q-author{font-size:.85rem;font-weight:800;color:#aaa;margin-top:16px;text-align:right}
+.q-type{margin-bottom:16px;text-align:right}
 
 /* Swipe hint */
 .swipe-hint{
