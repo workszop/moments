@@ -68,7 +68,7 @@ export function CodeReveal(container, giftState) {
 }
 
 function launchConfetti() {
-  const colors = ['#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#C77DFF'];
+  const colors = ['#000', '#333', '#666', '#999', '#ccc'];
   const el = document.createElement('div');
   el.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden';
   document.body.appendChild(el);

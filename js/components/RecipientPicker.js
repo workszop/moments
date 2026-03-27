@@ -40,18 +40,18 @@ export function RecipientPicker(container, giftState, onNext) {
     const isActive = selected === t.id;
     card.style.cssText = `
       cursor:pointer;text-align:center;padding:20px 14px;
-      border-color:${isActive ? t.color : ''};
-      background:${isActive ? t.color + '15' : '#fff'};
+      border-width:${isActive ? '2px' : '1px'};
+      background:${isActive ? '#f0f0f0' : '#fff'};
     `;
     card.innerHTML = `<p style="font-weight:900;font-size:16px">${t.label}</p>`;
     card.addEventListener('click', () => {
       selected = t.id;
       grid.querySelectorAll('.card').forEach(c => {
-        c.style.borderColor = '';
+        c.style.borderWidth = '1px';
         c.style.background = '#fff';
       });
-      card.style.borderColor = t.color;
-      card.style.background = t.color + '15';
+      card.style.borderWidth = '2px';
+      card.style.background = '#f0f0f0';
       nextBtn.disabled = false;
     });
     grid.appendChild(card);

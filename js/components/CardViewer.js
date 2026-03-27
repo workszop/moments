@@ -9,10 +9,6 @@ const TYPE_CLASSES = {
   story: 'type-story', compliment: 'type-compliment',
   sentence: 'type-sentence', private_thought: 'type-private_thought'
 };
-const COLOR_THEMES = {
-  story: 'ct-story', compliment: 'ct-compliment',
-  sentence: 'ct-sentence', private_thought: 'ct-private_thought'
-};
 
 export function CardViewer(container) {
   const messages = store.getShuffledFeed();
@@ -89,10 +85,6 @@ export function CardViewer(container) {
 
     isFlipped = false;
     cardInner.classList.remove('flipped');
-
-    // Color theme
-    Object.values(COLOR_THEMES).forEach(c => cardWrap.classList.remove(c));
-    cardWrap.classList.add(COLOR_THEMES[msg.type] || 'ct-sentence');
 
     const typeLabel = TYPE_LABELS[msg.type] || msg.type;
     const typeClass = TYPE_CLASSES[msg.type] || '';
