@@ -17,7 +17,7 @@ export function CodeEntry(container) {
         type="text"
         class="input input-code mb-8"
         id="code-input"
-        placeholder="e.g. DEMO-LOVE-2026"
+        placeholder="e.g. ART-101"
         autocomplete="off"
         autocorrect="off"
         spellcheck="false"

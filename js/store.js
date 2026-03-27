@@ -30,7 +30,7 @@ class Store {
   }
 
   _seedDemoIfNeeded() {
-    const hasDemo = this._state.accessCodes.some(c => c.code_id === 'DEMO-LOVE-2026');
+    const hasDemo = this._state.accessCodes.some(c => c.code_id === 'ART-101');
     if (!hasDemo) {
       this._state.accessCodes.push(...DEMO_ACCESS_CODES);
       this._state.messages.push(...DEMO_MESSAGES);
