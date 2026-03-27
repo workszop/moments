@@ -1,14 +1,6 @@
 import { store } from '../store.js';
 import { router } from '../router.js';
 
-const TYPE_LABELS = {
-  story: 'story', compliment: 'compliment',
-  sentence: 'message', private_thought: 'my thought'
-};
-const TYPE_CLASSES = {
-  story: 'type-story', compliment: 'type-compliment',
-  sentence: 'type-sentence', private_thought: 'type-private_thought'
-};
 
 export function CardViewer(container) {
   const messages = store.getShuffledFeed();
@@ -43,12 +35,11 @@ export function CardViewer(container) {
       <div class="card-container card-in" id="card-wrap">
         <div class="card-inner" id="card-inner">
           <div class="card-face card-front">
-            <p class="card-front-hint">your moment</p>
+            <p class="card-front-hint">a moment</p>
             <p class="card-front-sub">tap to reveal</p>
           </div>
           <div class="card-face card-back">
             <div class="print-area" id="card-print-area">
-              <div class="q-type" id="card-type-chip"></div>
               <p class="q-text" id="card-text"></p>
               <p class="q-author" id="card-author"></p>
             </div>
@@ -76,7 +67,6 @@ export function CardViewer(container) {
   const cardInner = view.querySelector('#card-inner');
   const cardText = view.querySelector('#card-text');
   const cardAuthor = view.querySelector('#card-author');
-  const cardTypeChip = view.querySelector('#card-type-chip');
   const counter = view.querySelector('#card-counter');
   const nextBtn = view.querySelector('#next-card-btn');
   const swipeHint = view.querySelector('#swipe-hint');
@@ -88,9 +78,6 @@ export function CardViewer(container) {
     isFlipped = false;
     cardInner.classList.remove('flipped');
 
-    const typeLabel = TYPE_LABELS[msg.type] || msg.type;
-    const typeClass = TYPE_CLASSES[msg.type] || '';
-    cardTypeChip.innerHTML = `<span class="chip ${typeClass}">${typeLabel}</span>`;
     cardText.textContent = `"${msg.content}"`;
     cardAuthor.textContent = `\u2014 ${msg.author}`;
 
