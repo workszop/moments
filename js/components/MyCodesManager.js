@@ -7,7 +7,7 @@ export function MyCodesManager(container) {
 
   function render() {
     const allCodes = store.getAllCodes();
-    const knownCodes = allCodes.filter(c => c.is_active || c._unlocked);
+    const knownCodes = allCodes;
     const privateCount = store.getPrivateEntries().length;
     const privateActive = store.isPrivateVaultActive();
 
