@@ -3,113 +3,136 @@ import { router } from '../router.js';
 
 export function MyCodesManager(container) {
   const div = document.createElement('div');
-  div.className = 'view fade-in';
-  div.style.maxWidth = '600px';
+  div.className = 'view view-scroll fade-in';
 
   function render() {
-    const codes = store.getUnlockedCodes();
+    const allCodes = store.getAllCodes();
+    const knownCodes = allCodes;
+    const privateCount = store.getPrivateEntries().length;
+    const privateActive = store.isPrivateVaultActive();
 
     div.innerHTML = `
-      <div class="text-center mb-32">
-        <h2 class="title-md mb-8">My Codes</h2>
-        <p class="subtitle">Manage all your unlocked moment banks.</p>
+      <div class="text-center mb-20">
+        <div class="title mb-4">My Codes</div>
+        <p class="subtitle">Activate or deactivate your moment collections.</p>
       </div>
 
-      <div class="w-full mb-24">
-        <div style="display:flex;gap:8px">
+      <div class="form-panel w-full mb-16">
+        <div class="flex-row gap-8">
           <input
             type="text"
-            class="input"
+            class="input input-code flex-1"
             id="add-code-input"
-            placeholder="Enter a new code"
-            style="text-transform:uppercase;letter-spacing:1px"
+            placeholder="Code"
+            maxlength="20"
           >
-          <button class="btn-primary btn-small" id="add-code-btn">Add</button>
+          <button class="btn btn-primary btn-small" id="add-code-btn">Add</button>
         </div>
-        <div id="add-code-error" style="color:var(--red);font-size:13px;font-weight:700;margin-top:8px;display:none"></div>
-        <div id="add-code-success" style="color:var(--green);font-size:13px;font-weight:700;margin-top:8px;display:none"></div>
+        <div class="error-text mt-8" id="add-code-error"></div>
       </div>
 
-      ${codes.length > 0 ? `
-        <div class="flex-col gap-12 w-full" id="codes-list"></div>
-      ` : `
-        <p class="subtitle text-center" style="font-size:14px">
-          No codes yet. Enter one above or try <strong style="color:var(--purple)">DEMO-LOVE-2026</strong>
-        </p>
-      `}
+      <div class="flex-col gap-10 w-full" id="codes-list">
+        <!-- Private vault as a toggleable collection -->
+        <div class="card">
+          <div class="flex-between">
+            <div>
+              <p style="font-weight:900;font-size:14px;letter-spacing:1px">REMEMBER</p>
+              <p style="font-size:12px;font-weight:700;color:#888;margin-top:4px">
+                your private moments &middot; ${privateCount} moment${privateCount !== 1 ? 's' : ''}
+              </p>
+            </div>
+            <div class="flex-row gap-8">
+              <button class="header-btn" id="vault-add-btn">+ add</button>
+              <button class="header-btn ${privateActive ? 'header-btn-active' : ''}" id="toggle-vault-btn">
+                ${privateActive ? 'on' : 'off'}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <div style="margin-top:32px">
-        <button class="btn-secondary btn-small" id="codes-back-btn">&#8592; Back</button>
+      ${knownCodes.length === 0 && privateCount === 0 ? `
+        <p class="hint text-center mt-16">
+          No codes yet. Enter one above or try <strong style="color:#000">ART-101</strong>
+        </p>
+      ` : ''}
+
+      <div class="mt-16">
+        <button class="btn btn-secondary btn-small" id="codes-back-btn">Back</button>
       </div>
     `;
 
-    // Render code cards
     const list = div.querySelector('#codes-list');
-    if (list) {
-      codes.forEach(code => {
-        const msgCount = store.getMessagesForCode(code.code_id).length;
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.style.cursor = 'default';
-        card.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:center">
-            <div>
-              <p style="font-weight:900;font-size:1rem;letter-spacing:1px">${code.code_id}</p>
-              <p style="font-size:.85rem;font-weight:700;color:#888;margin-top:4px">
-                from ${code.creator_name} &middot; ${msgCount} moment${msgCount !== 1 ? 's' : ''}
-              </p>
-            </div>
-            <span class="chip chip-green" style="font-size:11px">active</span>
-          </div>
-        `;
-        list.appendChild(card);
-      });
-    }
 
-    // Bind add code
+    // Render code collections
+    knownCodes.forEach(code => {
+      const msgCount = store.getMessagesForCode(code.code_id).length;
+      const isActive = code.is_active;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="flex-between">
+          <div>
+            <p style="font-weight:900;font-size:14px;letter-spacing:1px">${code.code_id}</p>
+            <p style="font-size:12px;font-weight:700;color:#888;margin-top:4px">
+              from ${code.creator_name} &middot; ${msgCount} moment${msgCount !== 1 ? 's' : ''}
+            </p>
+          </div>
+          <button class="header-btn ${isActive ? 'header-btn-active' : ''} toggle-code-btn" data-code="${code.code_id}">
+            ${isActive ? 'on' : 'off'}
+          </button>
+        </div>
+      `;
+      list.appendChild(card);
+    });
+
+    // Toggle code listeners
+    list.addEventListener('click', (e) => {
+      const btn = e.target.closest('.toggle-code-btn');
+      if (btn) {
+        store.toggleCode(btn.dataset.code);
+        render();
+      }
+    });
+
+    // Vault toggle
+    div.querySelector('#toggle-vault-btn').addEventListener('click', () => {
+      store.togglePrivateVault();
+      render();
+    });
+
+    // Vault add button
+    div.querySelector('#vault-add-btn').addEventListener('click', () => {
+      router.navigate('vault');
+    });
+
+    // Add code
     const addInput = div.querySelector('#add-code-input');
     const addBtn = div.querySelector('#add-code-btn');
     const errorEl = div.querySelector('#add-code-error');
-    const successEl = div.querySelector('#add-code-success');
 
     function tryAdd() {
       const val = addInput.value.trim().toUpperCase();
-      errorEl.style.display = 'none';
-      successEl.style.display = 'none';
-
+      errorEl.textContent = '';
       if (!val) return;
 
       const found = store.findCode(val);
-      if (!found) {
-        errorEl.textContent = 'Code not found.';
-        errorEl.style.display = 'block';
-        return;
-      }
-
-      if (found.is_active) {
-        successEl.textContent = 'This code is already active!';
-        successEl.style.display = 'block';
-        return;
-      }
+      if (!found) { errorEl.textContent = 'Code not found.'; return; }
+      if (found.is_active) { window.showToast('Code already active'); return; }
 
       store.unlockCode(val);
       addInput.value = '';
+      window.showToast('Code unlocked!');
       render();
     }
 
     addBtn.addEventListener('click', tryAdd);
-    addInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') tryAdd();
-    });
-
-    div.querySelector('#codes-back-btn').addEventListener('click', () => {
-      router.navigate('welcome');
-    });
+    addInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') tryAdd(); });
+    div.querySelector('#codes-back-btn').addEventListener('click', () => router.navigate('welcome'));
   }
 
   render();
   const unsub = store.subscribe(render);
   container.appendChild(div);
-
   return () => unsub();
 }

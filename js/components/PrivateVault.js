@@ -1,86 +1,62 @@
 import { store } from '../store.js';
+import { router } from '../router.js';
 
 export function PrivateVault(container) {
   const div = document.createElement('div');
-  div.className = 'view fade-in';
-  div.style.maxWidth = '600px';
+  div.className = 'view view-center fade-in';
 
-  function render() {
-    const entries = store.getPrivateEntries();
+  const count = store.getPrivateEntries().length;
 
-    div.innerHTML = `
-      <div class="text-center mb-32">
-        <div class="section-label mb-16">&#128216; my journal</div>
-        <h2 class="title-md mb-8">Private Vault</h2>
-        <p class="subtitle">What made you smile today?</p>
-      </div>
+  div.innerHTML = `
+    <div class="text-center mb-20">
+      <div class="section-label mb-12">remember</div>
+      <div class="title mb-4">Add a moment</div>
+      <p class="subtitle">Write something you want to remember. It will appear as a card in your feed.</p>
+    </div>
 
-      <div class="w-full mb-24">
-        <textarea
-          class="textarea mb-12"
-          id="vault-input"
-          placeholder="Write a happy thought, a memory, something you're grateful for..."
-          rows="3"
-        ></textarea>
-        <button class="btn-primary w-full" id="vault-save-btn">
-          Save moment
-        </button>
-      </div>
+    <div class="form-panel w-full mb-16">
+      <textarea
+        class="textarea mb-10"
+        id="vault-input"
+        placeholder="A happy thought, a memory, something you're grateful for..."
+        rows="3"
+      ></textarea>
+      <button class="btn btn-primary btn-full" id="vault-save-btn">
+        Save moment
+      </button>
+    </div>
 
-      ${entries.length > 0 ? `
-        <div class="w-full">
-          <p style="font-size:13px;font-weight:800;color:#aaa;margin-bottom:16px">
-            ${entries.length} private moment${entries.length !== 1 ? 's' : ''}
-          </p>
-          <div class="flex-col gap-12" id="vault-list"></div>
-        </div>
-      ` : `
-        <p class="subtitle text-center" style="font-size:14px;margin-top:16px">
-          Your entries will appear here and show up in your card feed.
-        </p>
-      `}
-    `;
+    ${count > 0 ? `
+      <p class="hint text-center">${count} private moment${count !== 1 ? 's' : ''} in your deck</p>
+    ` : `
+      <p class="hint text-center">Your moments will show up as cards in your feed.</p>
+    `}
 
-    const list = div.querySelector('#vault-list');
-    if (list) {
-      entries.slice().reverse().forEach(entry => {
-        const card = document.createElement('div');
-        card.className = 'card-flat';
-        card.style.cssText = 'background:#faf5ff;border:2.5px solid var(--dark);border-radius:16px;padding:20px';
-        card.innerHTML = `
-          <p style="font-size:.95rem;font-weight:700;line-height:1.6;color:var(--dark)">
-            "${entry.content}"
-          </p>
-          <p style="font-size:.75rem;font-weight:700;color:#bbb;margin-top:10px">
-            &mdash; you
-          </p>
-        `;
-        list.appendChild(card);
-      });
-    }
+    <div class="mt-16">
+      <button class="btn btn-secondary btn-small" id="vault-back-btn">Back</button>
+    </div>
+  `;
 
-    // Bind save
-    const input = div.querySelector('#vault-input');
-    const saveBtn = div.querySelector('#vault-save-btn');
-
-    saveBtn.addEventListener('click', () => {
-      const text = input.value.trim();
-      if (!text) {
-        input.classList.add('shake');
-        setTimeout(() => input.classList.remove('shake'), 400);
-        return;
-      }
-      store.addPrivateEntry(text);
-      render();
-    });
-
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
-        saveBtn.click();
-      }
-    });
-  }
-
-  render();
   container.appendChild(div);
+
+  const input = div.querySelector('#vault-input');
+  const saveBtn = div.querySelector('#vault-save-btn');
+
+  saveBtn.addEventListener('click', () => {
+    const text = input.value.trim();
+    if (!text) {
+      input.classList.add('shake');
+      setTimeout(() => input.classList.remove('shake'), 400);
+      return;
+    }
+    store.addPrivateEntry(text);
+    input.value = '';
+    window.showToast('Moment saved');
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) saveBtn.click();
+  });
+
+  div.querySelector('#vault-back-btn').addEventListener('click', () => router.navigate('my-codes'));
 }

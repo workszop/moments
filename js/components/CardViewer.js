@@ -1,31 +1,28 @@
 import { store } from '../store.js';
 import { router } from '../router.js';
 
-const TYPE_LABELS = {
-  story: 'story',
-  compliment: 'compliment',
-  sentence: 'message',
-  private_thought: 'my thought'
-};
-
-const TYPE_CLASSES = {
-  story: 'type-story',
-  compliment: 'type-compliment',
-  sentence: 'type-sentence',
-  private_thought: 'type-private_thought'
-};
+function formatCountdown(ms) {
+  const totalSec = Math.ceil(ms / 1000);
+  const m = Math.floor(totalSec / 60);
+  const s = totalSec % 60;
+  return `${m}:${s.toString().padStart(2, '0')}`;
+}
 
 export function CardViewer(container) {
   const messages = store.getShuffledFeed();
 
   if (messages.length === 0) {
     const empty = document.createElement('div');
-    empty.className = 'view text-center fade-in';
+    empty.className = 'view view-center fade-in';
     empty.innerHTML = `
-      <p style="font-size:2rem;margin-bottom:16px">&#128148;</p>
-      <h2 class="title-md mb-12">No moments yet</h2>
-      <p class="subtitle mb-24">Unlock a code or start your journal to see cards here.</p>
-      <button class="btn-primary" id="empty-go-codes">Enter a code</button>
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <p class="empty-title">No moments yet</p>
+        <p class="empty-sub">Unlock a code or start adding moments to see cards here.</p>
+        <button class="btn btn-primary" id="empty-go-codes">Enter a code</button>
+      </div>
     `;
     container.appendChild(empty);
     empty.querySelector('#empty-go-codes').addEventListener('click', () => router.navigate('codes'));
@@ -34,143 +31,146 @@ export function CardViewer(container) {
 
   let currentIndex = 0;
   let isFlipped = false;
-  let startX = 0;
-  let currentX = 0;
-  let isDragging = false;
+  let tsy = 0, tsx = 0;
+  let countdownInterval = null;
 
   const view = document.createElement('div');
-  view.className = 'view text-center fade-in';
+  view.className = 'view fade-in';
 
   view.innerHTML = `
-    <p class="subtitle mb-24" style="font-size:14px">Tap card to reveal &middot; Swipe for next</p>
-    <div class="card-flip-container">
-      <div class="card-swipe-wrapper">
-        <div class="card-flip" id="moment-card">
-          <div class="card-flip-face card-flip-front">
-            <p style="font-size:3rem;margin-bottom:16px">&#10024;</p>
-            <p style="font-weight:900;font-size:1.2rem">your moment</p>
-            <p style="font-weight:700;font-size:.85rem;opacity:.7;margin-top:8px">tap to reveal</p>
+    <div class="card-area" id="card-area">
+      <div class="card-container card-in" id="card-wrap">
+        <div class="card-inner" id="card-inner">
+          <div class="card-face card-front">
+            <p class="card-front-hint">a moment</p>
+            <p class="card-front-sub" id="card-front-sub">tap to reveal</p>
           </div>
-          <div class="card-flip-face card-flip-back" id="card-back">
+          <div class="card-face card-back">
+            <div class="print-area" id="card-print-area">
+              <p class="q-text" id="card-text"></p>
+              <p class="q-author" id="card-author"></p>
+            </div>
           </div>
+        </div>
+        <div class="swipe-hint" id="swipe-hint">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l7-7 7 7"/></svg>
+          <span>Swipe up for next</span>
         </div>
       </div>
     </div>
-    <div style="margin-top:24px;display:flex;gap:12px;align-items:center">
-      <button class="fav-btn" id="fav-toggle" title="Favorite">&#9825;</button>
-      <span style="font-size:13px;font-weight:700;color:#aaa" id="card-counter"></span>
-      <button class="btn-secondary btn-small" id="next-card-btn">Next &#8594;</button>
+
+    <div class="actions w-full">
+      <button class="btn btn-secondary" id="my-codes-btn">My codes</button>
+      <button class="btn btn-primary" id="next-card-btn" style="flex:1">
+        Next
+        <span class="hint" id="card-counter" style="color:rgba(255,255,255,.6)"></span>
+      </button>
     </div>
   `;
 
   container.appendChild(view);
 
-  const card = view.querySelector('#moment-card');
-  const cardBack = view.querySelector('#card-back');
-  const favBtn = view.querySelector('#fav-toggle');
+  const cardWrap = view.querySelector('#card-wrap');
+  const cardInner = view.querySelector('#card-inner');
+  const cardText = view.querySelector('#card-text');
+  const cardAuthor = view.querySelector('#card-author');
+  const cardFrontSub = view.querySelector('#card-front-sub');
   const counter = view.querySelector('#card-counter');
   const nextBtn = view.querySelector('#next-card-btn');
-  const swipeWrapper = view.querySelector('.card-swipe-wrapper');
+  const swipeHint = view.querySelector('#swipe-hint');
+
+  function updateFlipStatus() {
+    const remaining = store.flipsRemaining();
+    if (remaining > 0) {
+      cardFrontSub.textContent = `tap to reveal \u00B7 ${remaining} left`;
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+      }
+    } else {
+      startCountdown();
+    }
+  }
+
+  function startCountdown() {
+    function tick() {
+      const ms = store.getTimeUntilNextFlip();
+      if (ms <= 0) {
+        cardFrontSub.textContent = `tap to reveal \u00B7 ${store.flipsRemaining()} left`;
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+        return;
+      }
+      cardFrontSub.textContent = `next cards in ${formatCountdown(ms)}`;
+    }
+    tick();
+    countdownInterval = setInterval(tick, 1000);
+  }
 
   function renderCard() {
     const msg = messages[currentIndex];
     if (!msg) return;
 
     isFlipped = false;
-    card.classList.remove('flipped');
-    card.style.transition = 'transform .6s cubic-bezier(.4,.0,.2,1)';
-    swipeWrapper.style.transform = '';
-    swipeWrapper.style.opacity = '';
+    cardInner.classList.remove('flipped');
 
-    const typeLabel = TYPE_LABELS[msg.type] || msg.type;
-    const typeClass = TYPE_CLASSES[msg.type] || '';
+    cardText.textContent = `"${msg.content}"`;
+    cardAuthor.textContent = `\u2014 ${msg.author}`;
 
-    cardBack.innerHTML = `
-      <div class="chip ${typeClass}" style="margin-bottom:20px;font-size:12px">${typeLabel}</div>
-      <p style="font-size:1.15rem;font-weight:700;line-height:1.6;margin-bottom:20px;color:var(--dark)">
-        "${msg.content}"
-      </p>
-      <p style="font-size:.85rem;font-weight:800;color:#aaa">&mdash; ${msg.author}</p>
-    `;
+    counter.textContent = `${currentIndex + 1}/${messages.length}`;
 
-    favBtn.innerHTML = store.isFavorite(msg.message_id) ? '&#9829;' : '&#9825;';
-    favBtn.classList.toggle('active', store.isFavorite(msg.message_id));
-    favBtn.style.color = store.isFavorite(msg.message_id) ? 'var(--red)' : '#aaa';
-
-    counter.textContent = `${currentIndex + 1} / ${messages.length}`;
+    swipeHint.classList.remove('visible');
+    updateFlipStatus();
   }
 
   function flipCard() {
-    isFlipped = !isFlipped;
-    card.classList.toggle('flipped', isFlipped);
-    if (isFlipped) {
-      store.markSeen(messages[currentIndex].message_id);
+    if (isFlipped) return;
+    if (!store.canFlip()) {
+      window.showToast('Wait for the timer to flip more cards');
+      return;
     }
+    isFlipped = true;
+    cardInner.classList.add('flipped');
+    store.recordFlip();
+    store.markSeen(messages[currentIndex].message_id);
+    if (navigator.vibrate) navigator.vibrate(10);
+    swipeHint.classList.add('visible');
   }
 
   function nextCard() {
     currentIndex = (currentIndex + 1) % messages.length;
-    // Slide out animation
-    swipeWrapper.style.transition = 'transform .25s ease, opacity .25s ease';
-    swipeWrapper.style.transform = 'translateX(-120%)';
-    swipeWrapper.style.opacity = '0';
-
-    setTimeout(() => {
-      swipeWrapper.style.transition = 'none';
-      swipeWrapper.style.transform = 'translateX(120%)';
-      requestAnimationFrame(() => {
-        swipeWrapper.style.transition = 'transform .25s ease, opacity .25s ease';
-        swipeWrapper.style.transform = '';
-        swipeWrapper.style.opacity = '';
-        renderCard();
-      });
-    }, 260);
+    cardWrap.classList.remove('card-in');
+    void cardWrap.offsetWidth;
+    cardWrap.classList.add('card-in');
+    renderCard();
   }
 
-  // Tap to flip
-  card.addEventListener('click', (e) => {
-    if (isDragging) return;
-    flipCard();
+  function handleCardTap() {
+    if (!isFlipped) flipCard();
+    else if (messages.length > 1) nextCard();
+  }
+
+  cardInner.addEventListener('click', handleCardTap);
+
+  view.querySelector('#my-codes-btn').addEventListener('click', () => router.navigate('my-codes'));
+
+  nextBtn.addEventListener('click', () => {
+    if (messages.length > 1) nextCard();
   });
 
-  // Favorite toggle
-  favBtn.addEventListener('click', () => {
-    const msg = messages[currentIndex];
-    if (msg) {
-      store.toggleFavorite(msg.message_id);
-      favBtn.innerHTML = store.isFavorite(msg.message_id) ? '&#9829;' : '&#9825;';
-      favBtn.classList.toggle('active', store.isFavorite(msg.message_id));
-      favBtn.style.color = store.isFavorite(msg.message_id) ? 'var(--red)' : '#aaa';
-    }
-  });
-
-  // Next button
-  nextBtn.addEventListener('click', nextCard);
-
-  // Touch swipe
-  swipeWrapper.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-    isDragging = false;
+  const area = view;
+  area.addEventListener('touchstart', (e) => {
+    tsy = e.touches[0].clientY;
+    tsx = e.touches[0].clientX;
   }, { passive: true });
-
-  swipeWrapper.addEventListener('touchmove', (e) => {
-    currentX = e.touches[0].clientX;
-    const diff = currentX - startX;
-    if (Math.abs(diff) > 10) isDragging = true;
-    swipeWrapper.style.transform = `translateX(${diff * 0.4}px)`;
-    swipeWrapper.style.transition = 'none';
-  }, { passive: true });
-
-  swipeWrapper.addEventListener('touchend', () => {
-    const diff = currentX - startX;
-    if (Math.abs(diff) > 80) {
-      nextCard();
-    } else {
-      swipeWrapper.style.transition = 'transform .2s ease';
-      swipeWrapper.style.transform = '';
+  area.addEventListener('touchend', (e) => {
+    const dy = tsy - e.changedTouches[0].clientY;
+    const dx = Math.abs(tsx - e.changedTouches[0].clientX);
+    if (dy > 60 && dy > dx) {
+      if (isFlipped) { if (messages.length > 1) nextCard(); }
+      else flipCard();
     }
-    setTimeout(() => { isDragging = false; }, 50);
-  });
+  }, { passive: true });
 
   renderCard();
 }
