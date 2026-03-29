@@ -78,16 +78,30 @@ export function MyCodesManager(container) {
               from ${code.creator_name} &middot; ${msgCount} moment${msgCount !== 1 ? 's' : ''}
             </p>
           </div>
-          <button class="header-btn ${isActive ? 'header-btn-active' : ''} toggle-code-btn" data-code="${code.code_id}">
-            ${isActive ? 'on' : 'off'}
-          </button>
+          <div class="flex-row gap-8">
+            <button class="delete-code-btn" data-code="${code.code_id}" style="background:none;border:none;color:#e53e3e;font-size:18px;font-weight:900;cursor:pointer;padding:4px 8px;line-height:1">&times;</button>
+            <button class="header-btn ${isActive ? 'header-btn-active' : ''} toggle-code-btn" data-code="${code.code_id}">
+              ${isActive ? 'on' : 'off'}
+            </button>
+          </div>
         </div>
       `;
       list.appendChild(card);
     });
 
-    // Toggle code listeners
+    // Delete code listeners
     list.addEventListener('click', (e) => {
+      const delBtn = e.target.closest('.delete-code-btn');
+      if (delBtn) {
+        const codeId = delBtn.dataset.code;
+        if (confirm(`Delete collection "${codeId}"?`)) {
+          store.deleteCode(codeId);
+          render();
+        }
+        return;
+      }
+
+      // Toggle code listeners
       const btn = e.target.closest('.toggle-code-btn');
       if (btn) {
         store.toggleCode(btn.dataset.code);

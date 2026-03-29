@@ -105,6 +105,16 @@ class Store {
     }
   }
 
+  deleteCode(codeId) {
+    this._state.accessCodes = this._state.accessCodes.filter(
+      c => c.code_id.toUpperCase() !== codeId.toUpperCase()
+    );
+    this._state.messages = this._state.messages.filter(
+      m => m.code_id.toUpperCase() !== codeId.toUpperCase()
+    );
+    this._notify();
+  }
+
   hasAnyCodes() {
     return this._state.accessCodes.some(c => c.is_active);
   }

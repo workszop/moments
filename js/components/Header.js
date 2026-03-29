@@ -13,7 +13,7 @@ export function renderHeader(headerEl) {
       </div>
       <div class="header-right">
         ${hasCodes && current !== 'card'
-          ? `<button class="header-btn header-btn-active" id="hdr-card">Open card</button>`
+          ? `<button class="header-btn header-btn-active" id="hdr-card">Open</button>`
           : ''
         }
       </div>
