@@ -116,7 +116,8 @@ class Store {
   }
 
   hasAnyCodes() {
-    return this._state.accessCodes.some(c => c.is_active);
+    if (this._state.accessCodes.some(c => c.is_active)) return true;
+    return this._state.privateVaultActive && this._state.privateEntries.length > 0;
   }
 
   // --- Messages ---

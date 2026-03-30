@@ -38,7 +38,7 @@ export function MyCodesManager(container) {
             <div>
               <p style="font-weight:900;font-size:14px;letter-spacing:1px">REMEMBER</p>
               <p style="font-size:12px;font-weight:700;color:#888;margin-top:4px">
-                your private moments &middot; ${privateCount} moment${privateCount !== 1 ? 's' : ''}
+                private moments &middot; ${privateCount} moment${privateCount !== 1 ? 's' : ''}
               </p>
             </div>
             <div class="flex-row gap-8">
